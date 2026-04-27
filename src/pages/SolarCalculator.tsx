@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Calculator, Sun, TrendingDown, CheckCircle, AlertCircle, IndianRupee } from 'lucide-react';
+import { Calculator, Sun, TrendingDown, CheckCircle, AlertCircle, IndianRupee, TrendingUp } from 'lucide-react';
+import CountUp from '../components/CountUp';
 
 export default function SolarCalculator() {
   const [formData, setFormData] = useState({
@@ -30,7 +31,6 @@ export default function SolarCalculator() {
     if (!bill || bill < 500) return;
 
     // Calculation logic based on PRD
-    // ₹1500 bill → ~1kW, ₹3000 → ~2kW, ₹6000 → ~3-5kW
     let systemSize: number;
     if (bill <= 1500) systemSize = 1;
     else if (bill <= 3000) systemSize = 2;
@@ -38,19 +38,16 @@ export default function SolarCalculator() {
     else if (bill <= 6000) systemSize = 4;
     else systemSize = 5;
 
-    // Cost calculation (approx ₹60,000-70,000 per kW)
     const costPerKw = 65000;
     const cost = systemSize * costPerKw;
 
-    // Subsidy calculation (PM Surya Ghar)
-    // 1kW: ₹30,000, 2kW: ₹60,000, 3kW+: ₹78,000
     let subsidy: number;
     if (systemSize === 1) subsidy = 30000;
     else if (systemSize === 2) subsidy = 60000;
     else subsidy = 78000;
 
     const finalCost = cost - subsidy;
-    const monthlySavings = bill * 0.85; // 85% savings
+    const monthlySavings = bill * 0.85;
     const annualSavings = monthlySavings * 12;
     const paybackPeriod = finalCost / annualSavings;
 
@@ -73,7 +70,6 @@ export default function SolarCalculator() {
   const handleLeadSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setSubmitted(true);
-    // In production, send to backend/Google Sheets
     console.log('Lead submitted:', { ...formData, result });
   };
 
@@ -81,7 +77,7 @@ export default function SolarCalculator() {
     <div className="min-h-screen bg-gradient-to-br from-yellow-50 via-orange-50 to-white py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <div className="text-center mb-12">
+        <div className="text-center mb-12 animate-in fade-in slide-in-from-top duration-700">
           <div className="inline-flex items-center space-x-2 bg-yellow-100 text-yellow-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
             <Calculator className="h-4 w-4" />
             <span>Free Solar Calculator</span>
@@ -96,21 +92,21 @@ export default function SolarCalculator() {
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Calculator Form */}
-          <div className="bg-white rounded-2xl shadow-xl p-8">
+          <div className="bg-white rounded-2xl shadow-xl p-8 animate-in fade-in slide-in-from-left duration-700">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Enter Your Details</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
                   Monthly Electricity Bill (₹)
                 </label>
-                <div className="relative">
-                  <IndianRupee className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
+                <div className="relative group">
+                  <IndianRupee className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400 group-focus-within:text-yellow-500 transition-colors" />
                   <input
                     type="number"
                     value={formData.monthlyBill}
                     onChange={(e) => setFormData({ ...formData, monthlyBill: e.target.value })}
                     placeholder="Enter your monthly bill"
-                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-lg"
+                    className="w-full pl-12 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-lg transition-all"
                     required
                     min="500"
                   />
@@ -125,7 +121,7 @@ export default function SolarCalculator() {
                 <select
                   value={formData.location}
                   onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-lg"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent text-lg transition-all"
                   required
                 >
                   <option value="">Select your city</option>
@@ -145,12 +141,17 @@ export default function SolarCalculator() {
                       key={type}
                       type="button"
                       onClick={() => setFormData({ ...formData, houseType: type })}
-                      className={`py-3 px-4 rounded-xl border-2 font-medium transition-colors capitalize ${formData.houseType === type
-                          ? 'border-yellow-400 bg-yellow-50 text-yellow-700'
-                          : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                      className={`py-3 px-4 rounded-xl border-2 font-medium transition-all duration-300 capitalize relative overflow-hidden group ${formData.houseType === type
+                          ? 'border-yellow-500 bg-yellow-50 text-yellow-700 shadow-md scale-105'
+                          : 'border-gray-200 text-gray-600 hover:border-yellow-300 hover:bg-yellow-50/50'
                         }`}
                     >
-                      {type}
+                      <span className="relative z-10">{type}</span>
+                      {formData.houseType === type && (
+                        <div className="absolute right-2 top-2 animate-in zoom-in duration-300">
+                          <CheckCircle className="h-4 w-4 text-yellow-600" />
+                        </div>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -171,12 +172,17 @@ export default function SolarCalculator() {
                       key={type.value}
                       type="button"
                       onClick={() => setFormData({ ...formData, roofType: type.value })}
-                      className={`py-3 px-4 rounded-xl border-2 font-medium transition-colors ${formData.roofType === type.value
-                          ? 'border-yellow-400 bg-yellow-50 text-yellow-700'
-                          : 'border-gray-200 text-gray-600 hover:border-gray-300'
+                      className={`py-3 px-4 rounded-xl border-2 font-medium transition-all duration-300 relative overflow-hidden group ${formData.roofType === type.value
+                          ? 'border-yellow-500 bg-yellow-50 text-yellow-700 shadow-md scale-105'
+                          : 'border-gray-200 text-gray-600 hover:border-yellow-300 hover:bg-yellow-50/50'
                         }`}
                     >
-                      {type.label}
+                      <span className="relative z-10">{type.label}</span>
+                      {formData.roofType === type.value && (
+                        <div className="absolute right-2 top-2 animate-in zoom-in duration-300">
+                          <CheckCircle className="h-4 w-4 text-yellow-600" />
+                        </div>
+                      )}
                     </button>
                   ))}
                 </div>
@@ -184,7 +190,7 @@ export default function SolarCalculator() {
 
               <button
                 type="submit"
-                className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-4 rounded-xl font-semibold text-lg hover:from-yellow-600 hover:to-orange-600 transition-all shadow-lg"
+                className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-4 rounded-xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 transition-all shadow-lg hover:shadow-xl transform active:scale-[0.98]"
               >
                 Calculate My Solar System
               </button>
@@ -195,7 +201,7 @@ export default function SolarCalculator() {
           <div className="space-y-6">
             {result ? (
               <>
-                <div className="bg-white rounded-2xl shadow-xl p-8">
+                <div className="bg-white rounded-2xl shadow-xl p-8 animate-in fade-in zoom-in duration-700">
                   <div className="flex items-center space-x-3 mb-6">
                     <div className="bg-green-100 p-3 rounded-xl">
                       <CheckCircle className="h-6 w-6 text-green-600" />
@@ -203,11 +209,14 @@ export default function SolarCalculator() {
                     <h2 className="text-2xl font-bold text-gray-900">Your Solar Recommendation</h2>
                   </div>
 
-                  <div className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl p-6 text-white mb-6">
+                  <div className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl p-6 text-white mb-6 shadow-lg transform hover:scale-[1.02] transition-transform">
                     <div className="text-center">
-                      <div className="text-sm opacity-90 mb-1">Recommended System Size</div>
-                      <div className="text-6xl font-bold mb-2">{result.systemSize} kW</div>
-                      <div className="bg-white/20 rounded-lg px-4 py-2 inline-block">
+                      <div className="text-sm opacity-90 mb-1 font-bold uppercase tracking-widest">Recommended System Size</div>
+                      <div className="text-6xl font-extrabold mb-2 flex justify-center items-baseline">
+                        <CountUp end={result.systemSize} />
+                        <span className="text-2xl ml-2">kW</span>
+                      </div>
+                      <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 inline-block text-sm font-medium">
                         Perfect for your electricity usage
                       </div>
                     </div>
@@ -216,28 +225,28 @@ export default function SolarCalculator() {
                   <div className="space-y-4">
                     <div className="flex justify-between items-center py-3 border-b border-gray-100">
                       <span className="text-gray-600">System Cost</span>
-                      <span className="font-semibold text-gray-900">₹{result.cost.toLocaleString()}</span>
+                      <span className="font-bold text-gray-900 text-lg">₹<CountUp end={result.cost} /></span>
                     </div>
                     <div className="flex justify-between items-center py-3 border-b border-gray-100">
                       <span className="text-gray-600">Government Subsidy</span>
-                      <span className="font-semibold text-green-600">- ₹{result.subsidy.toLocaleString()}</span>
+                      <span className="font-bold text-green-600 text-lg">- ₹<CountUp end={result.subsidy} /></span>
                     </div>
-                    <div className="flex justify-between items-center py-4 bg-yellow-50 rounded-xl px-4">
-                      <span className="font-medium text-gray-900">Final Cost</span>
-                      <span className="text-2xl font-bold text-yellow-600">₹{result.finalCost.toLocaleString()}</span>
+                    <div className="flex justify-between items-center py-5 bg-yellow-50 rounded-2xl px-6 shadow-inner border border-yellow-100">
+                      <span className="font-bold text-gray-700">Final Price</span>
+                      <span className="text-3xl font-black text-yellow-600">₹<CountUp end={result.finalCost} /></span>
                     </div>
                   </div>
 
-                  <div className="mt-6 grid grid-cols-2 gap-4">
-                    <div className="bg-green-50 rounded-xl p-4 text-center">
-                      <TrendingDown className="h-6 w-6 text-green-600 mx-auto mb-2" />
-                      <div className="text-sm text-gray-600">Monthly Savings</div>
-                      <div className="text-2xl font-bold text-green-700">₹{Math.round(result.monthlySavings).toLocaleString()}</div>
+                  <div className="mt-8 grid grid-cols-2 gap-4">
+                    <div className="bg-green-50 rounded-2xl p-6 text-center border border-green-100 group hover:bg-green-100 transition-colors">
+                      <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
+                      <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Monthly Savings</div>
+                      <div className="text-2xl font-black text-green-700">₹<CountUp end={Math.round(result.monthlySavings)} /></div>
                     </div>
-                    <div className="bg-blue-50 rounded-xl p-4 text-center">
-                      <Sun className="h-6 w-6 text-blue-600 mx-auto mb-2" />
-                      <div className="text-sm text-gray-600">Payback Period</div>
-                      <div className="text-2xl font-bold text-blue-700">{result.paybackPeriod.toFixed(1)} yrs</div>
+                    <div className="bg-blue-50 rounded-2xl p-6 text-center border border-blue-100 group hover:bg-blue-100 transition-colors">
+                      <Sun className="h-8 w-8 text-blue-600 mx-auto mb-2" />
+                      <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Payback Period</div>
+                      <div className="text-2xl font-black text-blue-700"><CountUp end={Number(result.paybackPeriod.toFixed(1))} /> yrs</div>
                     </div>
                   </div>
 

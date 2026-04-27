@@ -72,6 +72,8 @@ const commercialPlans = [
 ];
 
 export default function Pricing() {
+  const [selectedPlan, setSelectedPlan] = useState('Standard');
+
   return (
     <div className="min-h-screen bg-white py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -90,72 +92,93 @@ export default function Pricing() {
         </div>
 
         {/* Subsidy Banner */}
-        <div className="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-2xl p-8 mb-16 text-white">
+        <div className="bg-gradient-to-r from-yellow-500 to-orange-500 rounded-2xl p-8 mb-16 text-white shadow-xl">
           <div className="grid md:grid-cols-3 gap-8 text-center">
-            <div>
+            <div className="animate-in fade-in slide-in-from-bottom duration-500 delay-100">
               <div className="text-4xl font-bold mb-2">₹30,000</div>
-              <div className="text-yellow-100">Subsidy on 1kW</div>
+              <div className="text-yellow-100 uppercase tracking-wider text-xs font-bold">Subsidy on 1kW</div>
             </div>
-            <div>
+            <div className="animate-in fade-in slide-in-from-bottom duration-500 delay-200">
               <div className="text-4xl font-bold mb-2">₹60,000</div>
-              <div className="text-yellow-100">Subsidy on 2kW</div>
+              <div className="text-yellow-100 uppercase tracking-wider text-xs font-bold">Subsidy on 2kW</div>
             </div>
-            <div>
+            <div className="animate-in fade-in slide-in-from-bottom duration-500 delay-300">
               <div className="text-4xl font-bold mb-2">₹78,000</div>
-              <div className="text-yellow-100">Subsidy on 3kW+</div>
+              <div className="text-yellow-100 uppercase tracking-wider text-xs font-bold">Subsidy on 3kW+</div>
             </div>
           </div>
         </div>
 
         {/* Residential Plans */}
         <div className="mb-20">
-          <div className="flex items-center space-x-3 mb-8">
-            <Home className="h-8 w-8 text-yellow-600" />
-            <h2 className="text-3xl font-bold text-gray-900">Residential Plans</h2>
+          <div className="flex items-center justify-between mb-8">
+            <div className="flex items-center space-x-3">
+              <Home className="h-8 w-8 text-yellow-600" />
+              <h2 className="text-3xl font-bold text-gray-900">Residential Plans</h2>
+            </div>
+            <span className="text-sm text-gray-500 bg-gray-100 px-4 py-1 rounded-full">Click to select plan</span>
           </div>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {residentialPlans.map((plan, index) => (
               <div
                 key={index}
-                className={`bg-white rounded-2xl border-2 overflow-hidden ${
-                  plan.popular ? 'border-yellow-400 shadow-xl scale-105' : 'border-gray-100 shadow-lg'
+                onClick={() => setSelectedPlan(plan.name)}
+                className={`bg-white rounded-2xl border-2 overflow-hidden transition-all duration-500 cursor-pointer relative group flex flex-col h-full ${
+                  selectedPlan === plan.name 
+                    ? 'border-yellow-400 shadow-2xl scale-105 z-10' 
+                    : 'border-gray-100 shadow-lg hover:border-yellow-200 hover:shadow-xl'
                 }`}
               >
-                {plan.popular && (
-                  <div className="bg-yellow-400 text-yellow-900 text-center py-2 font-semibold text-sm">
+                {/* Popular/Selected Tag */}
+                {plan.popular ? (
+                  <div className="bg-yellow-400 text-yellow-900 text-center py-2 font-bold text-xs uppercase tracking-widest">
                     Most Popular
                   </div>
+                ) : selectedPlan === plan.name ? (
+                  <div className="bg-yellow-100 text-yellow-700 text-center py-2 font-bold text-xs uppercase tracking-widest">
+                    Selected Plan
+                  </div>
+                ) : (
+                  <div className="h-[32px]"></div>
                 )}
-                <div className="p-6">
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{plan.name}</h3>
+
+                <div className="p-6 flex flex-col flex-grow">
+                  <div className="flex justify-between items-start mb-2">
+                    <h3 className="text-2xl font-bold text-gray-900">{plan.name}</h3>
+                    {selectedPlan === plan.name && (
+                      <div className="bg-yellow-500 rounded-full p-1 shadow-inner animate-in zoom-in duration-300">
+                        <CheckCircle className="h-4 w-4 text-white" />
+                      </div>
+                    )}
+                  </div>
                   <div className="text-4xl font-bold text-yellow-600 mb-1">{plan.kw}</div>
                   <p className="text-gray-500 text-sm mb-4">{plan.suitable}</p>
                   
-                  <div className="space-y-2 mb-6">
-                    <div className="flex justify-between text-sm">
+                  <div className="space-y-2 mb-6 p-4 bg-gray-50 rounded-xl">
+                    <div className="flex justify-between text-xs">
                       <span className="text-gray-500">Original Price</span>
                       <span className="line-through text-gray-400">₹{(plan.originalPrice as number).toLocaleString()}</span>
                     </div>
-                    <div className="flex justify-between text-sm">
+                    <div className="flex justify-between text-xs">
                       <span className="text-gray-500">Subsidy</span>
-                      <span className="text-green-600">- ₹{typeof plan.subsidy === 'number' ? plan.subsidy.toLocaleString() : plan.subsidy}</span>
+                      <span className="text-green-600 font-medium">- ₹{typeof plan.subsidy === 'number' ? plan.subsidy.toLocaleString() : plan.subsidy}</span>
                     </div>
-                    <div className="border-t pt-2 flex justify-between">
-                      <span className="font-medium">Final Price</span>
-                      <span className="text-xl font-bold text-yellow-600">
+                    <div className="border-t border-gray-200 pt-2 flex justify-between">
+                      <span className="text-sm font-bold text-gray-700">Final Price</span>
+                      <span className="text-xl font-extrabold text-yellow-600">
                         ₹{typeof plan.subsidy === 'number' ? (plan.originalPrice as number - plan.subsidy).toLocaleString() : 'Custom'}
                       </span>
                     </div>
                   </div>
 
                   <div className="mb-6">
-                    <div className="text-sm text-gray-500 mb-2">Monthly Savings</div>
-                    <div className="text-2xl font-bold text-green-600">{plan.savings}</div>
+                    <div className="text-xs text-gray-500 font-bold uppercase tracking-tighter mb-1">Monthly Savings</div>
+                    <div className="text-3xl font-bold text-green-600">{plan.savings}</div>
                   </div>
 
-                  <ul className="space-y-2 mb-6">
+                  <ul className="space-y-2.5 mb-8 flex-grow">
                     {plan.features.map((feature, i) => (
-                      <li key={i} className="flex items-start space-x-2 text-sm text-gray-600">
+                      <li key={i} className="flex items-start space-x-2.5 text-sm text-gray-600">
                         <CheckCircle className="h-4 w-4 text-green-500 mt-0.5 flex-shrink-0" />
                         <span>{feature}</span>
                       </li>
@@ -163,14 +186,14 @@ export default function Pricing() {
                   </ul>
 
                   <Link
-                    to="/calculator"
-                    className={`block w-full py-3 rounded-xl font-semibold text-center transition-colors ${
-                      plan.popular
-                        ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white hover:from-yellow-600 hover:to-orange-600'
-                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                    to={`/calculator?plan=${plan.name}`}
+                    className={`block w-full py-4 rounded-xl font-bold text-center transition-all duration-300 shadow-lg hover:shadow-xl ${
+                      selectedPlan === plan.name
+                        ? 'bg-gradient-to-r from-yellow-500 to-orange-500 text-white transform scale-105'
+                        : 'bg-gray-900 text-white hover:bg-gray-800'
                     }`}
                   >
-                    Get Quote
+                    Get Quote Now
                   </Link>
                 </div>
               </div>
