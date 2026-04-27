@@ -21,7 +21,7 @@ export default function SolarCalculator() {
   const [submitted, setSubmitted] = useState(false);
 
   const locations = [
-    'Nagpur', 'Mumbai', 'Pune', 'Delhi', 'Bangalore', 'Chennai', 
+    'Nagpur', 'Mumbai', 'Pune', 'Delhi', 'Bangalore', 'Chennai',
     'Hyderabad', 'Ahmedabad', 'Jaipur', 'Other'
   ];
 
@@ -145,11 +145,10 @@ export default function SolarCalculator() {
                       key={type}
                       type="button"
                       onClick={() => setFormData({ ...formData, houseType: type })}
-                      className={`py-3 px-4 rounded-xl border-2 font-medium transition-colors capitalize ${
-                        formData.houseType === type
+                      className={`py-3 px-4 rounded-xl border-2 font-medium transition-colors capitalize ${formData.houseType === type
                           ? 'border-yellow-400 bg-yellow-50 text-yellow-700'
                           : 'border-gray-200 text-gray-600 hover:border-gray-300'
-                      }`}
+                        }`}
                     >
                       {type}
                     </button>
@@ -172,11 +171,10 @@ export default function SolarCalculator() {
                       key={type.value}
                       type="button"
                       onClick={() => setFormData({ ...formData, roofType: type.value })}
-                      className={`py-3 px-4 rounded-xl border-2 font-medium transition-colors ${
-                        formData.roofType === type.value
+                      className={`py-3 px-4 rounded-xl border-2 font-medium transition-colors ${formData.roofType === type.value
                           ? 'border-yellow-400 bg-yellow-50 text-yellow-700'
                           : 'border-gray-200 text-gray-600 hover:border-gray-300'
-                      }`}
+                        }`}
                     >
                       {type.label}
                     </button>
@@ -198,21 +196,6 @@ export default function SolarCalculator() {
             {result ? (
               <>
                 <div className="bg-white rounded-2xl shadow-xl p-8">
-                  <div className="relative overflow-hidden rounded-2xl mb-6 group animate-in fade-in zoom-in duration-1000">
-                    <img 
-                      src="https://apollo-power.com/wp-content/uploads/elementor/thumbs/V6A4488-1-r5zk45pp99ytbhthqna8oss5l4a4sn2nnbl1l3prsw.jpg" 
-                      alt="Solar Installation" 
-                      className="w-full h-48 object-cover transform group-hover:scale-110 transition-transform duration-700"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent"></div>
-                    <div className="absolute bottom-4 left-4">
-                      <div className="flex items-center space-x-2 text-white">
-                        <Sun className="h-5 w-5 text-yellow-400" />
-                        <span className="font-semibold text-sm">Certified Installation</span>
-                      </div>
-                    </div>
-                  </div>
-
                   <div className="flex items-center space-x-3 mb-6">
                     <div className="bg-green-100 p-3 rounded-xl">
                       <CheckCircle className="h-6 w-6 text-green-600" />
@@ -313,20 +296,9 @@ export default function SolarCalculator() {
                 </div>
               </>
             ) : (
-              <div className="bg-white rounded-2xl shadow-xl p-8 text-center overflow-hidden">
-                <div className="relative overflow-hidden rounded-2xl mb-8 group">
-                  <img 
-                    src="https://apollo-power.com/wp-content/uploads/elementor/thumbs/V6A4488-1-r5zk45pp99ytbhthqna8oss5l4a4sn2nnbl1l3prsw.jpg" 
-                    alt="Solar Energy" 
-                    className="w-full h-56 object-cover transform group-hover:scale-105 transition-transform duration-700"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                  <div className="absolute bottom-4 left-0 right-0 text-white font-bold text-lg">
-                    Clean Energy for Your Home
-                  </div>
-                </div>
-                <div className="bg-yellow-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Sun className="h-10 w-10 text-yellow-600" />
+              <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
+                <div className="bg-yellow-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <Sun className="h-12 w-12 text-yellow-600" />
                 </div>
                 <h3 className="text-2xl font-bold text-gray-900 mb-4">
                   Enter Your Details

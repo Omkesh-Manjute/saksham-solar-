@@ -144,31 +144,37 @@ export default function Home() {
                 </div>
               </div>
             </div>
-            <div className="relative">
-              <div className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl p-8 shadow-2xl">
-                <div className="bg-white rounded-2xl p-6 space-y-4">
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-500 text-sm">System Size</span>
-                    <span className="text-2xl font-bold text-gray-900">3 kW</span>
+            <div className="relative animate-in fade-in slide-in-from-right duration-1000">
+              <div className="absolute -inset-4 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-3xl blur-2xl opacity-20 animate-pulse"></div>
+              <div className="relative bg-white rounded-3xl p-4 shadow-2xl overflow-hidden group">
+                <img 
+                  src="https://apollo-power.com/wp-content/uploads/elementor/thumbs/V6A4488-1-r5zk45pp99ytbhthqna8oss5l4a4sn2nnbl1l3prsw.jpg" 
+                  alt="Solar Installation" 
+                  className="w-full h-auto rounded-2xl shadow-inner transform group-hover:scale-105 transition-transform duration-700"
+                />
+                
+                {/* Floating Savings Badge */}
+                <div className="absolute top-8 right-8 bg-white/90 backdrop-blur-sm p-4 rounded-2xl shadow-xl animate-bounce-slow">
+                  <div className="flex items-center space-x-3">
+                    <div className="bg-yellow-100 p-2 rounded-lg">
+                      <TrendingUp className="h-6 w-6 text-yellow-600" />
+                    </div>
+                    <div>
+                      <div className="text-xs text-gray-500 font-medium uppercase tracking-wider">Monthly Savings</div>
+                      <div className="text-xl font-bold text-green-600">₹4,500+</div>
+                    </div>
                   </div>
-                  <div className="h-px bg-gray-100"></div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-500 text-sm">Original Cost</span>
-                    <span className="text-lg font-semibold text-gray-900">₹2,20,000</span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-500 text-sm">Subsidy</span>
-                    <span className="text-lg font-semibold text-green-600">- ₹78,000</span>
-                  </div>
-                  <div className="h-px bg-gray-100"></div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-gray-700 font-medium">Final Cost</span>
-                    <span className="text-2xl font-bold text-yellow-600">₹1,42,000</span>
-                  </div>
-                  <div className="bg-green-50 rounded-xl p-4">
-                    <div className="text-center">
-                      <span className="text-green-600 text-sm">Monthly Savings</span>
-                      <p className="text-3xl font-bold text-green-700">₹4,500</p>
+                </div>
+
+                {/* Bottom Label Overlay */}
+                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent p-8">
+                  <div className="flex items-center justify-between text-white">
+                    <div>
+                      <h3 className="font-bold text-xl">Premium Installation</h3>
+                      <p className="text-gray-300 text-sm">Serving Vidarbha & MP Border</p>
+                    </div>
+                    <div className="bg-yellow-500 p-2 rounded-full shadow-lg">
+                      <Sun className="h-6 w-6 text-white animate-spin-slow" />
                     </div>
                   </div>
                 </div>
