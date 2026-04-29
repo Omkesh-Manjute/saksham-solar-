@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { Briefcase, Users, Zap, CheckCircle, Upload, MapPin, Clock, TrendingUp, Loader2 } from 'lucide-react';
 
@@ -68,18 +68,23 @@ const benefits = [
 ];
 
 export default function Careers() {
-  const [selectedJob, setSelectedJob] = useState<number | null>(null);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitted, setSubmitted] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [resume, setResume] = useState<File | null>(null);
+  const formRef = useRef<HTMLDivElement>(null);
+
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
     email: '',
     experience: '',
     location: '',
-    resume: null as File | null,
   });
+
+  const handleApplyClick = (id: number) => {
+    setSelectedJob(id);
+    setTimeout(() => {
+      formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }, 100);
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -101,8 +106,8 @@ export default function Careers() {
     submissionData.append("preferred_location", formData.location);
 
     // Add resume file
-    if (formData.resume) {
-      submissionData.append("attachment", formData.resume);
+    if (resume) {
+      submissionData.append("attachment", resume);
     }
 
     try {
@@ -114,11 +119,14 @@ export default function Careers() {
       const data = await response.json();
       if (data.success) {
         setSubmitted(true);
-        setFormData({ name: '', phone: '', email: '', experience: '', location: '', resume: null });
+        setFormData({ name: '', phone: '', email: '', experience: '', location: '' });
+        setResume(null);
       } else {
-        setError("Something went wrong. Please try again later.");
+        console.error("Web3Forms Error:", data);
+        setError(data.message || "Something went wrong. Please try again later.");
       }
     } catch (err) {
+      console.error("Submission Error:", err);
       setError("Failed to submit application. Please check your internet connection.");
     } finally {
       setIsSubmitting(false);
@@ -241,7 +249,7 @@ export default function Careers() {
                       </div>
                     </div>
                     <button
-                      onClick={() => setSelectedJob(job.id)}
+                      onClick={() => handleApplyClick(job.id)}
                       className="mt-4 bg-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors"
                     >
                       Apply Now
@@ -255,7 +263,7 @@ export default function Careers() {
 
         {/* Application Form */}
         {selectedJob && (
-          <div className="mb-16">
+          <div className="mb-16" ref={formRef}>
             <h2 className="text-3xl font-bold text-gray-900 mb-6">Apply for this Position</h2>
             <div className="bg-white rounded-2xl border border-gray-200 p-8">
               {!submitted ? (
@@ -344,8 +352,8 @@ export default function Careers() {
                     <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center">
                       <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
                       <p className="text-gray-600 text-sm">
-                        {formData.resume ? (
-                          <span className="text-purple-600 font-medium">{formData.resume.name}</span>
+                        {resume ? (
+                          <span className="text-purple-600 font-medium">{resume.name}</span>
                         ) : (
                           <>
                             Drag and drop your resume here, or{' '}
@@ -355,17 +363,17 @@ export default function Careers() {
                                 type="file"
                                 name="attachment"
                                 accept=".pdf,.doc,.docx"
-                                onChange={(e) => setFormData({ ...formData, resume: e.target.files?.[0] || null })}
+                                onChange={(e) => setResume(e.target.files?.[0] || null)}
                                 className="hidden"
                               />
                             </label>
                           </>
                         )}
                       </p>
-                      {formData.resume && (
+                      {resume && (
                         <button 
                           type="button"
-                          onClick={() => setFormData({ ...formData, resume: null })}
+                          onClick={() => setResume(null)}
                           className="text-red-500 text-xs mt-2 hover:underline"
                         >
                           Remove file
@@ -405,7 +413,8 @@ export default function Careers() {
                     onClick={() => {
                       setSubmitted(false);
                       setSelectedJob(null);
-                      setFormData({ name: '', phone: '', email: '', experience: '', location: '', resume: null });
+                      setFormData({ name: '', phone: '', email: '', experience: '', location: '' });
+                      setResume(null);
                     }}
                     className="text-purple-600 font-medium hover:underline"
                   >
