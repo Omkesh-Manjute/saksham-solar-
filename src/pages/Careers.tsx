@@ -69,6 +69,7 @@ const benefits = [
 
 export default function Careers() {
   const [selectedJob, setSelectedJob] = useState<number | null>(null);
+  const [expandedJob, setExpandedJob] = useState<number | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -174,12 +175,12 @@ export default function Careers() {
               <div
                 key={job.id}
                 className={`bg-white border-2 rounded-2xl overflow-hidden transition-all ${
-                  selectedJob === job.id ? 'border-purple-400 shadow-lg' : 'border-gray-100 hover:border-gray-200'
+                  expandedJob === job.id ? 'border-purple-400 shadow-lg' : 'border-gray-100 hover:border-gray-200'
                 }`}
               >
                 <div
                   className="p-6 cursor-pointer"
-                  onClick={() => setSelectedJob(selectedJob === job.id ? null : job.id)}
+                  onClick={() => setExpandedJob(expandedJob === job.id ? null : job.id)}
                 >
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex-1">
@@ -207,13 +208,13 @@ export default function Careers() {
                     <div className="text-right">
                       <div className="text-lg font-bold text-purple-600">{job.salary}</div>
                       <button className="text-purple-600 font-medium text-sm hover:underline mt-1">
-                        {selectedJob === job.id ? 'Close Details' : 'View Details'}
+                        {expandedJob === job.id ? 'Close Details' : 'View Details'}
                       </button>
                     </div>
                   </div>
                 </div>
 
-                {selectedJob === job.id && (
+                {expandedJob === job.id && (
                   <div className="border-t border-gray-100 p-6 bg-gray-50">
                     <div className="grid md:grid-cols-2 gap-6">
                       <div>
