@@ -4,6 +4,7 @@ import { Phone, Mail, MapPin, MessageCircle, Clock, Send, CheckCircle, Loader2 }
 
 export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
