@@ -20,12 +20,12 @@ export default function Navbar() {
   return (
     <nav className="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-20">
           {/* Logo */}
           <Link to="/" className="flex items-center space-x-2">
-            <img src="/logo.png" alt="Saksham Solar Logo" className="h-10 w-10 object-contain" />
+            <img src="/logo.png" alt="Saksham Solar Electricity Logo" className="h-16 w-16 object-contain" />
             <span className="text-xl font-bold bg-gradient-to-r from-pink-500 to-orange-600 bg-clip-text text-transparent">
-              Saksham Solar
+              Saksham Solar Electricity
             </span>
           </Link>
 

@@ -38,10 +38,10 @@ const projects = [
   },
   {
     id: 4,
-    title: 'Farm Solar Pump - Balaghat',
+    title: 'Farm Solar Pump - Gondia',
     category: 'agricultural',
     size: '5 HP',
-    location: 'Balaghat, Madhya Pradesh',
+    location: 'Gondia, Maharashtra',
     savings: '₹8,000/month',
     image: '🚜',
     description: 'Solar water pump installation replacing diesel pump',
@@ -49,10 +49,10 @@ const projects = [
   },
   {
     id: 5,
-    title: 'Residential Installation - Delhi',
+    title: 'Residential Installation - Bhandara',
     category: 'residential',
     size: '5 kW',
-    location: 'Delhi',
+    location: 'Bhandara, Maharashtra',
     savings: '₹7,500/month',
     image: '🏡',
     description: 'Premium solar system for large independent house',
@@ -60,10 +60,10 @@ const projects = [
   },
   {
     id: 6,
-    title: 'School Solar Project - Bangalore',
+    title: 'School Solar Project - Nagpur',
     category: 'commercial',
     size: '25 kW',
-    location: 'Bangalore, Karnataka',
+    location: 'Nagpur, Maharashtra',
     savings: '₹35,000/month',
     image: '🏫',
     description: 'Solar installation for educational institution',
@@ -196,7 +196,7 @@ export default function Projects() {
           <div className="max-w-3xl mx-auto text-center">
             <div className="text-6xl mb-4">⭐⭐⭐⭐⭐</div>
             <blockquote className="text-2xl font-medium mb-6">
-              "Saksham Solar installed a 5kW system at our factory. The team was professional, 
+              "Saksham Solar Electricity installed a 5kW system at our factory. The team was professional, 
               installation was quick, and we're already seeing 70% reduction in electricity bills!"
             </blockquote>
             <div>

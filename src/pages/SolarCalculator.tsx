@@ -22,8 +22,8 @@ export default function SolarCalculator() {
   const [submitted, setSubmitted] = useState(false);
 
   const locations = [
-    'Nagpur', 'Mumbai', 'Pune', 'Delhi', 'Bangalore', 'Chennai',
-    'Hyderabad', 'Ahmedabad', 'Jaipur', 'Other'
+    'Nagpur', 'Mumbai', 'Pune', 'Gondia', 'Bhandara', 'Chandrapur',
+    'Amravati', 'Wardha', 'Yavatmal', 'Other'
   ];
 
   const calculateSolar = () => {
@@ -38,8 +38,12 @@ export default function SolarCalculator() {
     else if (bill <= 6000) systemSize = 4;
     else systemSize = 5;
 
-    const costPerKw = 65000;
-    const cost = systemSize * costPerKw;
+    let cost: number;
+    if (systemSize === 1) cost = 65000;
+    else if (systemSize === 2) cost = 145000;
+    else if (systemSize === 3) cost = 200000;
+    else if (systemSize === 4) cost = 245000;
+    else cost = 290000;
 
     let subsidy: number;
     if (systemSize === 1) subsidy = 30000;

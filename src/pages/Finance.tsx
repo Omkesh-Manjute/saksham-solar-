@@ -104,17 +104,17 @@ export default function Finance() {
                 </label>
                 <input
                   type="range"
-                  min="8"
-                  max="15"
+                  min="6"
+                  max="22"
                   step="0.5"
                   value={interestRate}
                   onChange={(e) => setInterestRate(Number(e.target.value))}
                   className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                 />
                 <div className="flex justify-between mt-2">
-                  <span className="text-sm text-gray-500">8%</span>
+                  <span className="text-sm text-gray-500">6%</span>
                   <span className="text-lg font-semibold text-gray-900">{interestRate}%</span>
-                  <span className="text-sm text-gray-500">15%</span>
+                  <span className="text-sm text-gray-500">22%</span>
                 </div>
               </div>
             </div>

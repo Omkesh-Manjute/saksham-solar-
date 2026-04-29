@@ -47,8 +47,8 @@ export default function Contact() {
                 <h3 className="font-semibold text-lg">Call Us</h3>
               </div>
               <p className="text-yellow-100 mb-2">Speak to our solar experts</p>
-              <a href="tel:+919876543210" className="text-2xl font-bold hover:underline">
-                +91 98765 43210
+              <a href="tel:+919923519061" className="text-2xl font-bold hover:underline">
+                +91 99235 19061
               </a>
               <p className="text-sm text-yellow-100 mt-2">Mon-Sat, 9AM-7PM</p>
             </div>
@@ -60,7 +60,7 @@ export default function Contact() {
               </div>
               <p className="text-green-100 mb-2">Chat with us instantly</p>
               <a
-                href="https://wa.me/919876543210"
+                href="https://wa.me/919923519061"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-lg font-bold hover:underline"
@@ -82,16 +82,28 @@ export default function Contact() {
               <p className="text-sm text-blue-100 mt-2">Response within 24 hours</p>
             </div>
 
-            <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-6 text-white">
+            <div className="bg-gradient-to-br from-purple-500 to-pink-500 rounded-2xl p-6 text-white overflow-y-auto max-h-[300px]">
               <div className="flex items-center space-x-3 mb-4">
                 <MapPin className="h-6 w-6" />
                 <h3 className="font-semibold text-lg">Visit Us</h3>
               </div>
-              <p className="text-purple-100">
-                Opp. Civil Court, Main Road,<br />
-                Gondia, Maharashtra<br />
-                India - 441601
-              </p>
+              <div className="space-y-4">
+                <div>
+                  <h4 className="font-medium text-white mb-1">Main Office</h4>
+                  <a href="https://maps.app.goo.gl/Swio5zF3MCdoRazF9" target="_blank" rel="noopener noreferrer" className="block text-purple-100 text-sm hover:text-white transition-colors">
+                    Gaddatoli Shivaji Nagar,<br />
+                    near Bajaj hospital Gondia.
+                  </a>
+                </div>
+                <div>
+                  <h4 className="font-medium text-white mb-1">2nd Office</h4>
+                  <p className="text-purple-100 text-sm">
+                    Saksham Solar Electricity,<br />
+                    TVS showroom Ke samne,<br />
+                    fulchur naka, Gondia.
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
 
@@ -155,12 +167,12 @@ export default function Contact() {
                         <option value="Nagpur">Nagpur</option>
                         <option value="Mumbai">Mumbai</option>
                         <option value="Pune">Pune</option>
-                        <option value="Delhi">Delhi</option>
-                        <option value="Bangalore">Bangalore</option>
-                        <option value="Chennai">Chennai</option>
-                        <option value="Hyderabad">Hyderabad</option>
-                        <option value="Ahmedabad">Ahmedabad</option>
-                        <option value="Jaipur">Jaipur</option>
+                        <option value="Gondia">Gondia</option>
+                        <option value="Bhandara">Bhandara</option>
+                        <option value="Chandrapur">Chandrapur</option>
+                        <option value="Amravati">Amravati</option>
+                        <option value="Wardha">Wardha</option>
+                        <option value="Yavatmal">Yavatmal</option>
                         <option value="Other">Other</option>
                       </select>
                     </div>
@@ -247,20 +259,13 @@ export default function Contact() {
         <div className="mb-16">
           <h2 className="text-3xl font-bold text-gray-900 mb-6 text-center">Our Service Areas</h2>
           <div className="bg-gray-100 rounded-2xl p-8">
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
               <div className="text-center">
                 <div className="bg-yellow-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
                   <MapPin className="h-8 w-8 text-yellow-600" />
                 </div>
                 <h3 className="font-semibold text-gray-900 mb-2">Local Districts</h3>
                 <p className="text-gray-600 text-sm">Gondia, Bhandara, Tumsar, Tirora</p>
-              </div>
-              <div className="text-center">
-                <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <MapPin className="h-8 w-8 text-blue-600" />
-                </div>
-                <h3 className="font-semibold text-gray-900 mb-2">Madhya Pradesh</h3>
-                <p className="text-gray-600 text-sm">Balaghat, Waraseoni, Lanji</p>
               </div>
               <div className="text-center">
                 <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -303,7 +308,7 @@ export default function Contact() {
                 <p className="text-gray-300 text-sm">Available 24/7 for existing customers</p>
               </div>
               <a
-                href="tel:+919876543210"
+                href="tel:+919923519061"
                 className="inline-block bg-yellow-500 text-gray-900 px-6 py-3 rounded-xl font-semibold hover:bg-yellow-400 transition-colors"
               >
                 Call Now

@@ -172,38 +172,7 @@ export default function Subsidy() {
           </div>
         </div>
 
-        {/* State-wise Additional Subsidy */}
-        <div className="mb-16">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">State-wise Additional Subsidy</h2>
-          <div className="bg-gray-50 rounded-2xl p-8 overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-4 px-4 font-semibold text-gray-900">State</th>
-                  <th className="text-left py-4 px-4 font-semibold text-gray-900">Additional Subsidy</th>
-                  <th className="text-left py-4 px-4 font-semibold text-gray-900">Total Benefit</th>
-                </tr>
-              </thead>
-              <tbody>
-                {[
-                  { state: 'Maharashtra', additional: 'Up to ₹20,000', total: 'Up to ₹98,000' },
-                  { state: 'Gujarat', additional: 'Up to ₹25,000', total: 'Up to ₹1,03,000' },
-                  { state: 'Rajasthan', additional: 'Up to ₹15,000', total: 'Up to ₹93,000' },
-                  { state: 'Karnataka', additional: 'Up to ₹20,000', total: 'Up to ₹98,000' },
-                  { state: 'Tamil Nadu', additional: 'Up to ₹18,000', total: 'Up to ₹96,000' },
-                  { state: 'Delhi', additional: 'Up to ₹22,000', total: 'Up to ₹1,00,000' },
-                ].map((row, index) => (
-                  <tr key={index} className="border-b border-gray-100">
-                    <td className="py-4 px-4 text-gray-700">{row.state}</td>
-                    <td className="py-4 px-4 text-green-600 font-medium">{row.additional}</td>
-                    <td className="py-4 px-4 text-yellow-600 font-bold">{row.total}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-            <p className="text-xs text-gray-500 mt-4">* State subsidies are subject to change. Please verify with local authorities.</p>
-          </div>
-        </div>
+
 
         {/* FAQ */}
         <div className="mb-16">

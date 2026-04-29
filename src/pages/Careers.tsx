@@ -286,7 +286,7 @@ export default function Careers() {
                       <option value="">Select location</option>
                       <option value="Gondia">Gondia</option>
                       <option value="Bhandara">Bhandara</option>
-                      <option value="Balaghat">Balaghat</option>
+                      <option value="Wardha">Wardha</option>
                       <option value="Tumsar">Tumsar</option>
                       <option value="Nagpur">Nagpur</option>
                       <option value="Any">Any Location</option>

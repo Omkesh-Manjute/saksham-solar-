@@ -6,7 +6,7 @@ const residentialPlans = [
   {
     name: 'Basic',
     kw: '1 kW',
-    originalPrice: 80000,
+    originalPrice: 65000,
     subsidy: 30000,
     savings: '₹1,500',
     suitable: '1-2 BHK, Small Homes',
@@ -15,7 +15,7 @@ const residentialPlans = [
   {
     name: 'Standard',
     kw: '2 kW',
-    originalPrice: 150000,
+    originalPrice: 145000,
     subsidy: 60000,
     savings: '₹3,000',
     suitable: '2-3 BHK, Medium Homes',
@@ -25,7 +25,7 @@ const residentialPlans = [
   {
     name: 'Premium',
     kw: '3 kW',
-    originalPrice: 220000,
+    originalPrice: 200000,
     subsidy: 78000,
     savings: '₹4,500',
     suitable: '3+ BHK, Large Homes',
@@ -34,7 +34,7 @@ const residentialPlans = [
   {
     name: 'Elite',
     kw: '5 kW',
-    originalPrice: 350000,
+    originalPrice: 290000,
     subsidy: 78000,
     savings: '₹7,500',
     suitable: 'Villas, Large Properties',
@@ -46,7 +46,7 @@ const commercialPlans = [
   {
     name: 'Shop Owner',
     kw: '5 kW',
-    originalPrice: 350000,
+    originalPrice: 290000,
     subsidy: 78000,
     savings: '₹7,500',
     suitable: 'Small Shops, Offices',

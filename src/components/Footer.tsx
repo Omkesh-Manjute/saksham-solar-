@@ -9,8 +9,8 @@ export default function Footer() {
           {/* Brand */}
           <div>
             <Link to="/" className="flex items-center space-x-2 mb-4">
-              <img src="/logo.png" alt="Saksham Solar Logo" className="h-10 w-10 object-contain" />
-              <span className="text-xl font-bold">Saksham Solar</span>
+              <img src="/logo.png" alt="Saksham Solar Electricity Logo" className="h-20 w-20 object-contain" />
+              <span className="text-xl font-bold">Saksham Solar Electricity</span>
             </Link>
             <p className="text-gray-400 text-sm leading-relaxed">
               India's trusted solar energy partner. Helping homes and businesses 
@@ -50,15 +50,17 @@ export default function Footer() {
             <ul className="space-y-3">
               <li className="flex items-start space-x-3">
                 <Phone className="h-5 w-5 text-yellow-400 mt-0.5" />
-                <span className="text-gray-400 text-sm">+91 98765 43210</span>
+                <span className="text-gray-400 text-sm">+91 99235 19061</span>
               </li>
               <li className="flex items-start space-x-3">
                 <Mail className="h-5 w-5 text-yellow-400 mt-0.5" />
                 <span className="text-gray-400 text-sm">info@sakshamsolar.in</span>
               </li>
               <li className="flex items-start space-x-3">
-                <MapPin className="h-5 w-5 text-yellow-400 mt-0.5" />
-                <span className="text-gray-400 text-sm">Gondia, Maharashtra, India - 441601</span>
+                <MapPin className="h-5 w-5 text-yellow-400 mt-0.5 flex-shrink-0" />
+                <a href="https://maps.app.goo.gl/Swio5zF3MCdoRazF9" target="_blank" rel="noopener noreferrer" className="text-gray-400 text-sm hover:text-yellow-400 transition-colors">
+                  Gaddatoli Shivaji Nagar, near Bajaj hospital Gondia
+                </a>
               </li>
             </ul>
           </div>
@@ -86,7 +88,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
           <p className="text-gray-500 text-sm">
-            © 2026 Saksham Solar. All rights reserved.
+            © 2026 Saksham Solar Electricity. All rights reserved.
           </p>
           <div className="flex space-x-6 text-sm">
             <Link to="#" className="text-gray-500 hover:text-yellow-400 transition-colors">Privacy Policy</Link>

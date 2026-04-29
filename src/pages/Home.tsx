@@ -38,21 +38,21 @@ const testimonials = [
     location: 'Gondia',
     image: '👨‍💼',
     rating: 5,
-    text: 'Installed 3kW system in Gondia. My electricity bill dropped from ₹4500 to ₹800. Excellent service by Saksham Solar!',
+    text: 'Installed 3kW system in Gondia. My electricity bill dropped from ₹4500 to ₹800. Excellent service by Saksham Solar Electricity!',
   },
   {
     name: 'Vijay Patle',
-    location: 'Balaghat',
+    location: 'Nagpur',
     image: '🧑‍💼',
     rating: 5,
-    text: 'Professional team, quick installation in Balaghat. The subsidy process was handled smoothly. Highly recommended!',
+    text: 'Professional team, quick installation in Nagpur. The subsidy process was handled smoothly. Highly recommended!',
   },
   {
     name: 'Rahul Meshram',
     location: 'Bhandara',
     image: '🧑‍💼',
     rating: 5,
-    text: 'Best investment for my home in Bhandara. The Saksham Solar team guided me through everything. Zero maintenance hassle.',
+    text: 'Best investment for my home in Bhandara. The Saksham Solar Electricity team guided me through everything. Zero maintenance hassle.',
   },
   {
     name: 'Anita Bisen',
@@ -67,16 +67,16 @@ const pricingPlans = [
   {
     name: 'Basic',
     kw: '1kW',
-    price: '₹80,000',
-    afterSubsidy: '₹50,000',
+    price: '₹65,000',
+    afterSubsidy: '₹35,000',
     savings: '₹1,500/month',
     suitable: 'Small homes, 1-2 BHK',
   },
   {
     name: 'Standard',
     kw: '2kW',
-    price: '₹1,50,000',
-    afterSubsidy: '₹90,000',
+    price: '₹1,45,000',
+    afterSubsidy: '₹85,000',
     savings: '₹3,000/month',
     suitable: 'Medium homes, 2-3 BHK',
     popular: true,
@@ -84,8 +84,8 @@ const pricingPlans = [
   {
     name: 'Premium',
     kw: '3kW',
-    price: '₹2,20,000',
-    afterSubsidy: '₹1,42,000',
+    price: '₹2,00,000',
+    afterSubsidy: '₹1,22,000',
     savings: '₹4,500/month',
     suitable: 'Large homes, 3+ BHK',
   },
@@ -171,7 +171,7 @@ export default function Home() {
                   <div className="flex items-center justify-between text-white">
                     <div>
                       <h3 className="font-bold text-xl">Premium Installation</h3>
-                      <p className="text-gray-300 text-sm">Serving Vidarbha & MP Border</p>
+                      <p className="text-gray-300 text-sm">Serving All Vidarbha</p>
                     </div>
                     <div className="bg-yellow-500 p-2 rounded-full shadow-lg">
                       <Sun className="h-6 w-6 text-white animate-spin-slow" />
@@ -205,7 +205,7 @@ export default function Home() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
-              Why Choose Saksham Solar?
+              Why Choose Saksham Solar Electricity?
             </h2>
             <p className="text-xl text-gray-600 max-w-2xl mx-auto">
               We provide end-to-end solar solutions with the best quality and service
