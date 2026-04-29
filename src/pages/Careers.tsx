@@ -68,6 +68,10 @@ const benefits = [
 ];
 
 export default function Careers() {
+  const [selectedJob, setSelectedJob] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [resume, setResume] = useState<File | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
