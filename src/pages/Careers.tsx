@@ -107,7 +107,7 @@ export default function Careers() {
     setError(null);
 
     const jobTitle = vacancies.find(v => v.id === selectedJob)?.title || 'General Application';
-    const phoneNumber = '918329776361';
+    const phoneNumber = '919923519061';
 
     const message =
       `*New Job Application - Saksham Solar*%0A%0A` +
