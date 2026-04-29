@@ -80,7 +80,6 @@ export default function Careers() {
     email: '',
     experience: '',
     location: '',
-    resumeLink: '',
   });
 
   const handleApplyClick = (id: number) => {
@@ -90,47 +89,32 @@ export default function Careers() {
     }, 100);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setError(null);
 
     const jobTitle = vacancies.find(v => v.id === selectedJob)?.title || "General Application";
-    const submissionData = new FormData();
-    submissionData.append("access_key", "d71d3cf1-978b-4032-a372-f760fb5fb3dd");
-    submissionData.append("subject", `New Job Application: ${jobTitle} from ${formData.name}`);
-    submissionData.append("from_name", "Saksham Solar Careers");
-    submissionData.append("job_title", jobTitle);
+    const phoneNumber = "918329776361";
     
-    // Add text fields
-    submissionData.append("name", formData.name);
-    submissionData.append("phone", formData.phone);
-    submissionData.append("email", formData.email);
-    submissionData.append("experience", formData.experience);
-    submissionData.append("preferred_location", formData.location);
-
-    submissionData.append("resume_link", formData.resumeLink);
-
-    try {
-      const response = await fetch("https://api.web3forms.com/submit", {
-        method: "POST",
-        body: submissionData
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setSubmitted(true);
-        setFormData({ name: '', phone: '', email: '', experience: '', location: '', resumeLink: '' });
-      } else {
-        console.error("Web3Forms Error:", data);
-        setError(data.message || "Something went wrong. Please try again later.");
-      }
-    } catch (err) {
-      console.error("Submission Error:", err);
-      setError("Failed to submit application. Please check your internet connection.");
-    } finally {
+    const message = `*New Job Application - Saksham Solar*%0A%0A` +
+      `*Position:* ${jobTitle}%0A` +
+      `*Name:* ${formData.name}%0A` +
+      `*Phone:* ${formData.phone}%0A` +
+      `*Email:* ${formData.email}%0A` +
+      `*Experience:* ${formData.experience}%0A` +
+      `*Preferred Location:* ${formData.location}%0A%0A` +
+      `_Hello, I have submitted my application. I am attaching my resume here._`;
+      
+    // Construct WhatsApp URL
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+    
+    // Small delay to show loading state
+    setTimeout(() => {
+      window.open(whatsappUrl, '_blank');
+      setSubmitted(true);
       setIsSubmitting(false);
-    }
+      setFormData({ name: '', phone: '', email: '', experience: '', location: '' });
+    }, 1000);
   };
 
   return (
@@ -345,21 +329,17 @@ export default function Careers() {
                       <option value="Any">Any Location</option>
                     </select>
                   </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Resume Link (Google Drive / Dropbox / LinkedIn) *
-                    </label>
-                    <input
-                      type="url"
-                      required
-                      placeholder="https://drive.google.com/..."
-                      value={formData.resumeLink}
-                      onChange={(e) => setFormData({ ...formData, resumeLink: e.target.value })}
-                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none transition-all"
-                    />
-                    <p className="text-gray-400 text-xs mt-2">
-                      Please upload your resume to Google Drive/Dropbox and paste the link here. Make sure the link is public.
-                    </p>
+                  
+                  <div className="bg-purple-50 rounded-xl p-6 border border-purple-100">
+                    <div className="flex items-start space-x-3">
+                      <MessageCircle className="h-6 w-6 text-purple-600 mt-1" />
+                      <div>
+                        <h4 className="font-semibold text-purple-900">How to send Resume?</h4>
+                        <p className="text-sm text-purple-700 mt-1">
+                          After clicking the button below, your WhatsApp will open. Please <strong>attach your Resume (PDF/DOC)</strong> in the chat to complete your application.
+                        </p>
+                      </div>
+                    </div>
                   </div>
 
                   {error && (
@@ -370,12 +350,19 @@ export default function Careers() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-indigo-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-70"
+                    className="w-full bg-purple-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-purple-700 transition-all shadow-lg shadow-purple-200 flex items-center justify-center space-x-2 disabled:opacity-70"
                   >
                     {isSubmitting ? (
-                      <Loader2 className="h-5 w-5 animate-spin" />
-                    ) : null}
-                    <span>{isSubmitting ? 'Submitting Application...' : 'Submit Application'}</span>
+                      <>
+                        <Loader2 className="h-5 w-5 animate-spin" />
+                        <span>Opening WhatsApp...</span>
+                      </>
+                    ) : (
+                      <>
+                        <MessageCircle className="h-5 w-5" />
+                        <span>Submit & Apply on WhatsApp</span>
+                      </>
+                    )}
                   </button>
                 </form>
               ) : (
@@ -392,7 +379,7 @@ export default function Careers() {
                     onClick={() => {
                       setSubmitted(false);
                       setSelectedJob(null);
-                      setFormData({ name: '', phone: '', email: '', experience: '', location: '', resumeLink: '' });
+                      setFormData({ name: '', phone: '', email: '', experience: '', location: '' });
                     }}
                     className="text-purple-600 font-medium hover:underline"
                   >
