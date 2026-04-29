@@ -1,6 +1,6 @@
 import { useState, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { Briefcase, Users, Zap, CheckCircle, Upload, MapPin, Clock, TrendingUp, Loader2 } from 'lucide-react';
+import { Briefcase, Users, Zap, CheckCircle, MapPin, Clock, TrendingUp, Loader2, MessageCircle } from 'lucide-react';
 
 const vacancies = [
   {
@@ -68,8 +68,11 @@ const benefits = [
 ];
 
 export default function Careers() {
-  const [selectedJob, setSelectedJob] = useState<number | null>(null);
+  // expandedJob = which job card is showing details (View Details)
   const [expandedJob, setExpandedJob] = useState<number | null>(null);
+  // selectedJob = which job the application form is open for (Apply Now)
+  const [selectedJob, setSelectedJob] = useState<number | null>(null);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -83,33 +86,41 @@ export default function Careers() {
     location: '',
   });
 
+  // Toggle job detail expansion — does NOT affect the application form
+  const handleToggleDetails = (id: number) => {
+    setExpandedJob(prev => (prev === id ? null : id));
+  };
+
+  // Open application form for this job and scroll to it
   const handleApplyClick = (id: number) => {
     setSelectedJob(id);
+    setSubmitted(false);
+    setError(null);
     setTimeout(() => {
       formRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }, 100);
+    }, 200);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
 
-    const jobTitle = vacancies.find(v => v.id === selectedJob)?.title || "General Application";
-    const phoneNumber = "918329776361";
-    
-    const message = `*New Job Application - Saksham Solar*%0A%0A` +
+    const jobTitle = vacancies.find(v => v.id === selectedJob)?.title || 'General Application';
+    const phoneNumber = '918329776361';
+
+    const message =
+      `*New Job Application - Saksham Solar*%0A%0A` +
       `*Position:* ${jobTitle}%0A` +
       `*Name:* ${formData.name}%0A` +
       `*Phone:* ${formData.phone}%0A` +
-      `*Email:* ${formData.email}%0A` +
+      `*Email:* ${formData.email || 'Not provided'}%0A` +
       `*Experience:* ${formData.experience}%0A` +
       `*Preferred Location:* ${formData.location}%0A%0A` +
-      `_Hello, I have submitted my application. I am attaching my resume here._`;
-      
-    // Construct WhatsApp URL
+      `_Please find my resume attached._`;
+
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-    
-    // Small delay to show loading state
+
     setTimeout(() => {
       window.open(whatsappUrl, '_blank');
       setSubmitted(true);
@@ -121,6 +132,7 @@ export default function Careers() {
   return (
     <div className="min-h-screen bg-white py-12">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
         {/* Header */}
         <div className="text-center mb-16">
           <div className="inline-flex items-center space-x-2 bg-purple-100 text-purple-800 px-4 py-2 rounded-full text-sm font-medium mb-4">
@@ -131,7 +143,7 @@ export default function Careers() {
             Build Your Career in Solar
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Be part of India's renewable energy revolution. We're hiring passionate individuals 
+            Be part of India's renewable energy revolution. We're hiring passionate individuals
             across multiple roles.
           </p>
         </div>
@@ -139,14 +151,14 @@ export default function Careers() {
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 mb-16">
           {[
-            { value: '100+', label: 'Team Members' },
-            { value: '15+', label: 'Open Positions' },
-            { value: '500+', label: 'Hires Since 2020' },
-            { value: '95%', label: 'Retention Rate' },
-          ].map((stat, index) => (
-            <div key={index} className="bg-gradient-to-br from-purple-500 to-indigo-500 rounded-2xl p-6 text-center text-white">
-              <div className="text-4xl font-bold mb-1">{stat.value}</div>
-              <div className="text-purple-100 text-sm">{stat.label}</div>
+            { label: 'Team Members', value: '50+' },
+            { label: 'Open Positions', value: '24' },
+            { label: 'Cities', value: '8' },
+            { label: 'Projects Done', value: '500+' },
+          ].map((stat, i) => (
+            <div key={i} className="bg-purple-50 rounded-2xl p-6 text-center">
+              <div className="text-3xl font-bold text-purple-600 mb-1">{stat.value}</div>
+              <div className="text-gray-600 text-sm">{stat.label}</div>
             </div>
           ))}
         </div>
@@ -178,9 +190,10 @@ export default function Careers() {
                   expandedJob === job.id ? 'border-purple-400 shadow-lg' : 'border-gray-100 hover:border-gray-200'
                 }`}
               >
+                {/* Card Header — clicking toggles details only */}
                 <div
                   className="p-6 cursor-pointer"
-                  onClick={() => setExpandedJob(expandedJob === job.id ? null : job.id)}
+                  onClick={() => handleToggleDetails(job.id)}
                 >
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div className="flex-1">
@@ -207,13 +220,14 @@ export default function Careers() {
                     </div>
                     <div className="text-right">
                       <div className="text-lg font-bold text-purple-600">{job.salary}</div>
-                      <button className="text-purple-600 font-medium text-sm hover:underline mt-1">
+                      <span className="text-purple-600 font-medium text-sm hover:underline mt-1 block">
                         {expandedJob === job.id ? 'Close Details' : 'View Details'}
-                      </button>
+                      </span>
                     </div>
                   </div>
                 </div>
 
+                {/* Expanded Details — only controlled by expandedJob */}
                 {expandedJob === job.id && (
                   <div className="border-t border-gray-100 p-6 bg-gray-50">
                     <div className="grid md:grid-cols-2 gap-6">
@@ -233,8 +247,12 @@ export default function Careers() {
                         </ul>
                       </div>
                     </div>
+                    {/* Apply Now — only sets selectedJob, does NOT collapse details */}
                     <button
-                      onClick={() => handleApplyClick(job.id)}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleApplyClick(job.id);
+                      }}
                       className="mt-4 bg-purple-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-purple-700 transition-colors"
                     >
                       Apply Now
@@ -246,151 +264,151 @@ export default function Careers() {
           </div>
         </div>
 
-        {/* Application Form */}
-        {selectedJob && (
-          <div className="mb-16" ref={formRef}>
-            <h2 className="text-3xl font-bold text-gray-900 mb-6">Apply for this Position</h2>
-            <div className="bg-white rounded-2xl border border-gray-200 p-8">
-              {!submitted ? (
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Full Name *
-                      </label>
-                      <input
-                        type="text"
-                        name="name"
-                        required
-                        value={formData.name}
-                        onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
-                        placeholder="Enter your full name"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Phone Number *
-                      </label>
-                      <input
-                        type="tel"
-                        name="phone"
-                        required
-                        value={formData.phone}
-                        onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
-                        placeholder="Enter your phone number"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Email Address
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
-                        placeholder="Enter your email"
-                      />
-                    </div>
-                    <div>
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
-                        Years of Experience *
-                      </label>
-                      <input
-                        type="text"
-                        name="experience"
-                        required
-                        value={formData.experience}
-                        onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
-                        placeholder="e.g., 2 years"
-                      />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Preferred Location *
-                    </label>
-                    <select
-                      required
-                      name="location"
-                      value={formData.location}
-                      onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
-                    >
-                      <option value="">Select location</option>
-                      <option value="Gondia">Gondia</option>
-                      <option value="Bhandara">Bhandara</option>
-                      <option value="Wardha">Wardha</option>
-                      <option value="Tumsar">Tumsar</option>
-                      <option value="Nagpur">Nagpur</option>
-                      <option value="Any">Any Location</option>
-                    </select>
-                  </div>
-                  
-                  <div className="bg-purple-50 rounded-xl p-6 border border-purple-100">
-                    <div className="flex items-start space-x-3">
-                      <MessageCircle className="h-6 w-6 text-purple-600 mt-1" />
+        {/* Application Form — always in DOM, shows content when selectedJob is set */}
+        <div ref={formRef} className="mb-16">
+          {selectedJob ? (
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Apply for this Position</h2>
+              <p className="text-purple-600 font-semibold mb-6">
+                {vacancies.find(v => v.id === selectedJob)?.title}
+              </p>
+              <div className="bg-white rounded-2xl border border-gray-200 p-8">
+                {!submitted ? (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="grid md:grid-cols-2 gap-6">
                       <div>
-                        <h4 className="font-semibold text-purple-900">How to send Resume?</h4>
-                        <p className="text-sm text-purple-700 mt-1">
-                          After clicking the button below, your WhatsApp will open. Please <strong>attach your Resume (PDF/DOC)</strong> in the chat to complete your application.
-                        </p>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Full Name *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.name}
+                          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none"
+                          placeholder="Enter your full name"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Phone Number *
+                        </label>
+                        <input
+                          type="tel"
+                          required
+                          value={formData.phone}
+                          onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none"
+                          placeholder="Enter your phone number"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Email Address
+                        </label>
+                        <input
+                          type="email"
+                          value={formData.email}
+                          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none"
+                          placeholder="Enter your email (optional)"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                          Years of Experience *
+                        </label>
+                        <input
+                          type="text"
+                          required
+                          value={formData.experience}
+                          onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
+                          className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none"
+                          placeholder="e.g., 2 years or Fresher"
+                        />
                       </div>
                     </div>
-                  </div>
-
-                  {error && (
-                    <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm">
-                      {error}
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Preferred Location *
+                      </label>
+                      <select
+                        required
+                        value={formData.location}
+                        onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent outline-none"
+                      >
+                        <option value="">Select location</option>
+                        <option value="Gondia">Gondia</option>
+                        <option value="Bhandara">Bhandara</option>
+                        <option value="Wardha">Wardha</option>
+                        <option value="Tumsar">Tumsar</option>
+                        <option value="Nagpur">Nagpur</option>
+                        <option value="Any">Any Location</option>
+                      </select>
                     </div>
-                  )}
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="w-full bg-purple-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-purple-700 transition-all shadow-lg shadow-purple-200 flex items-center justify-center space-x-2 disabled:opacity-70"
-                  >
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 className="h-5 w-5 animate-spin" />
-                        <span>Opening WhatsApp...</span>
-                      </>
-                    ) : (
-                      <>
-                        <MessageCircle className="h-5 w-5" />
-                        <span>Submit & Apply on WhatsApp</span>
-                      </>
+
+                    {/* WhatsApp info box */}
+                    <div className="bg-purple-50 rounded-xl p-5 border border-purple-100">
+                      <div className="flex items-start space-x-3">
+                        <MessageCircle className="h-6 w-6 text-purple-600 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <h4 className="font-semibold text-purple-900">How to send your Resume?</h4>
+                          <p className="text-sm text-purple-700 mt-1">
+                            After clicking the button below, WhatsApp will open with your details pre-filled.
+                            Just <strong>attach your Resume (PDF/DOC)</strong> and hit Send!
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+
+                    {error && (
+                      <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm">{error}</div>
                     )}
-                  </button>
-                </form>
-              ) : (
-                <div className="text-center py-12">
-                  <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
-                    <CheckCircle className="h-10 w-10 text-green-600" />
+
+                    <button
+                      type="submit"
+                      disabled={isSubmitting}
+                      className="w-full bg-purple-600 text-white py-4 rounded-xl font-bold text-lg hover:bg-purple-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-70"
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <Loader2 className="h-5 w-5 animate-spin" />
+                          <span>Opening WhatsApp...</span>
+                        </>
+                      ) : (
+                        <>
+                          <MessageCircle className="h-5 w-5" />
+                          <span>Submit &amp; Apply on WhatsApp</span>
+                        </>
+                      )}
+                    </button>
+                  </form>
+                ) : (
+                  <div className="text-center py-12">
+                    <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+                      <CheckCircle className="h-10 w-10 text-green-600" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Sent!</h3>
+                    <p className="text-gray-600 mb-6">
+                      Your WhatsApp has opened. Please send the message and attach your resume to complete the application.
+                    </p>
+                    <button
+                      onClick={() => {
+                        setSubmitted(false);
+                        setSelectedJob(null);
+                        setFormData({ name: '', phone: '', email: '', experience: '', location: '' });
+                      }}
+                      className="text-purple-600 font-medium hover:underline"
+                    >
+                      Apply for another position
+                    </button>
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Submitted!</h3>
-                  <p className="text-gray-600 mb-6">
-                    Thank you for applying. Our HR team will review your application and 
-                    contact you within 3-5 business days.
-                  </p>
-                  <button
-                    onClick={() => {
-                      setSubmitted(false);
-                      setSelectedJob(null);
-                      setFormData({ name: '', phone: '', email: '', experience: '', location: '' });
-                    }}
-                    className="text-purple-600 font-medium hover:underline"
-                  >
-                    Apply for another position
-                  </button>
-                </div>
-              )}
+                )}
+              </div>
             </div>
-          </div>
-        )}
+          ) : null}
+        </div>
 
         {/* CTA */}
         <div className="text-center">
@@ -405,6 +423,7 @@ export default function Careers() {
             Contact HR Team
           </Link>
         </div>
+
       </div>
     </div>
   );
