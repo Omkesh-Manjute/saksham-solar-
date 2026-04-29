@@ -91,7 +91,15 @@ export default function Footer() {
               © 2025 Saksham Solar Electricity. All rights reserved.
             </p>
             <p className="text-gray-600 text-xs mt-1">
-              Designed & Developed by <span className="text-yellow-400 font-semibold">Omkesh AI Lab</span>
+              Designed & Developed by{' '}
+              <a
+                href="https://www.omkeshsinghthakur.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-yellow-400 font-semibold hover:text-yellow-300 transition-colors"
+              >
+                Omkesh AI Lab
+              </a>
             </p>
           </div>
           <div className="flex space-x-6 text-sm">
