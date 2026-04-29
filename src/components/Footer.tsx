@@ -54,7 +54,7 @@ export default function Footer() {
               </li>
               <li className="flex items-start space-x-3">
                 <Mail className="h-5 w-5 text-yellow-400 mt-0.5" />
-                <span className="text-gray-400 text-sm">info@sakshamsolar.in</span>
+                <span className="text-gray-400 text-sm">prashant@sakshamsolar.com</span>
               </li>
               <li className="flex items-start space-x-3">
                 <MapPin className="h-5 w-5 text-yellow-400 mt-0.5 flex-shrink-0" />

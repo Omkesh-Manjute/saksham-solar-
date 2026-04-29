@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Briefcase, Users, Zap, CheckCircle, Upload, MapPin, Clock, TrendingUp } from 'lucide-react';
+import { Briefcase, Users, Zap, CheckCircle, Upload, MapPin, Clock, TrendingUp, Loader2 } from 'lucide-react';
 
 const vacancies = [
   {
@@ -69,7 +69,9 @@ const benefits = [
 
 export default function Careers() {
   const [selectedJob, setSelectedJob] = useState<number | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     phone: '',
@@ -79,10 +81,48 @@ export default function Careers() {
     resume: null as File | null,
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    console.log('Job application:', { jobId: selectedJob, ...formData });
+    setIsSubmitting(true);
+    setError(null);
+
+    const jobTitle = vacancies.find(v => v.id === selectedJob)?.title || "General Application";
+    const submissionData = new FormData();
+    submissionData.append("access_key", "d71d3cf1-978b-4032-a372-f760fb5fb3dd");
+    submissionData.append("subject", `New Job Application: ${jobTitle} from ${formData.name}`);
+    submissionData.append("from_name", "Saksham Solar Careers");
+    submissionData.append("job_title", jobTitle);
+    
+    // Add text fields
+    submissionData.append("name", formData.name);
+    submissionData.append("phone", formData.phone);
+    submissionData.append("email", formData.email);
+    submissionData.append("experience", formData.experience);
+    submissionData.append("preferred_location", formData.location);
+
+    // Add resume file
+    if (formData.resume) {
+      submissionData.append("attachment", formData.resume);
+    }
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: submissionData
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setSubmitted(true);
+        setFormData({ name: '', phone: '', email: '', experience: '', location: '', resume: null });
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
+    } catch (err) {
+      setError("Failed to submit application. Please check your internet connection.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -227,6 +267,7 @@ export default function Careers() {
                       </label>
                       <input
                         type="text"
+                        name="name"
                         required
                         value={formData.name}
                         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
@@ -240,6 +281,7 @@ export default function Careers() {
                       </label>
                       <input
                         type="tel"
+                        name="phone"
                         required
                         value={formData.phone}
                         onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
@@ -253,6 +295,7 @@ export default function Careers() {
                       </label>
                       <input
                         type="email"
+                        name="email"
                         value={formData.email}
                         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                         className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
@@ -265,6 +308,7 @@ export default function Careers() {
                       </label>
                       <input
                         type="text"
+                        name="experience"
                         required
                         value={formData.experience}
                         onChange={(e) => setFormData({ ...formData, experience: e.target.value })}
@@ -279,6 +323,7 @@ export default function Careers() {
                     </label>
                     <select
                       required
+                      name="location"
                       value={formData.location}
                       onChange={(e) => setFormData({ ...formData, location: e.target.value })}
                       className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-400 focus:border-transparent"
@@ -299,25 +344,51 @@ export default function Careers() {
                     <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center">
                       <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
                       <p className="text-gray-600 text-sm">
-                        Drag and drop your resume here, or{' '}
-                        <label className="text-purple-600 cursor-pointer hover:underline">
-                          browse
-                          <input
-                            type="file"
-                            accept=".pdf,.doc,.docx"
-                            onChange={(e) => setFormData({ ...formData, resume: e.target.files?.[0] || null })}
-                            className="hidden"
-                          />
-                        </label>
+                        {formData.resume ? (
+                          <span className="text-purple-600 font-medium">{formData.resume.name}</span>
+                        ) : (
+                          <>
+                            Drag and drop your resume here, or{' '}
+                            <label className="text-purple-600 cursor-pointer hover:underline">
+                              browse
+                              <input
+                                type="file"
+                                name="attachment"
+                                accept=".pdf,.doc,.docx"
+                                onChange={(e) => setFormData({ ...formData, resume: e.target.files?.[0] || null })}
+                                className="hidden"
+                              />
+                            </label>
+                          </>
+                        )}
                       </p>
+                      {formData.resume && (
+                        <button 
+                          type="button"
+                          onClick={() => setFormData({ ...formData, resume: null })}
+                          className="text-red-500 text-xs mt-2 hover:underline"
+                        >
+                          Remove file
+                        </button>
+                      )}
                       <p className="text-gray-400 text-xs mt-1">Max file size: 5MB</p>
                     </div>
                   </div>
+
+                  {error && (
+                    <div className="bg-red-50 text-red-600 p-4 rounded-xl text-sm">
+                      {error}
+                    </div>
+                  )}
                   <button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-indigo-700 transition-all"
+                    disabled={isSubmitting}
+                    className="w-full bg-gradient-to-r from-purple-600 to-indigo-600 text-white py-4 rounded-xl font-semibold text-lg hover:from-purple-700 hover:to-indigo-700 transition-all flex items-center justify-center space-x-2 disabled:opacity-70"
                   >
-                    Submit Application
+                    {isSubmitting ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : null}
+                    <span>{isSubmitting ? 'Submitting Application...' : 'Submit Application'}</span>
                   </button>
                 </form>
               ) : (
