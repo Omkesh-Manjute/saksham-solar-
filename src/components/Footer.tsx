@@ -85,14 +85,18 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="border-t border-gray-800 mt-10 pt-6 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-          <p className="text-gray-500 text-sm">
-            © 2026 Saksham Solar Electricity. All rights reserved.
-          </p>
+          <div className="text-center md:text-left">
+            <p className="text-gray-500 text-sm">
+              © 2025 Saksham Solar Electricity. All rights reserved.
+            </p>
+            <p className="text-gray-600 text-xs mt-1">
+              Designed & Developed by <span className="text-yellow-400 font-semibold">Omkesh AI Lab</span>
+            </p>
+          </div>
           <div className="flex space-x-6 text-sm">
-            <Link to="#" className="text-gray-500 hover:text-yellow-400 transition-colors">Privacy Policy</Link>
-            <Link to="#" className="text-gray-500 hover:text-yellow-400 transition-colors">Terms of Service</Link>
+            <Link to="/privacy" className="text-gray-500 hover:text-yellow-400 transition-colors">Privacy Policy</Link>
+            <Link to="/terms" className="text-gray-500 hover:text-yellow-400 transition-colors">Terms of Service</Link>
           </div>
         </div>
       </div>
