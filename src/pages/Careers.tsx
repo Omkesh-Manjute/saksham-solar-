@@ -72,7 +72,6 @@ export default function Careers() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [resume, setResume] = useState<File | null>(null);
   const formRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
@@ -81,6 +80,7 @@ export default function Careers() {
     email: '',
     experience: '',
     location: '',
+    resumeLink: '',
   });
 
   const handleApplyClick = (id: number) => {
@@ -109,10 +109,7 @@ export default function Careers() {
     submissionData.append("experience", formData.experience);
     submissionData.append("preferred_location", formData.location);
 
-    // Add resume file
-    if (resume) {
-      submissionData.append("attachment", resume);
-    }
+    submissionData.append("resume_link", formData.resumeLink);
 
     try {
       const response = await fetch("https://api.web3forms.com/submit", {
@@ -123,8 +120,7 @@ export default function Careers() {
       const data = await response.json();
       if (data.success) {
         setSubmitted(true);
-        setFormData({ name: '', phone: '', email: '', experience: '', location: '' });
-        setResume(null);
+        setFormData({ name: '', phone: '', email: '', experience: '', location: '', resumeLink: '' });
       } else {
         console.error("Web3Forms Error:", data);
         setError(data.message || "Something went wrong. Please try again later.");
@@ -351,40 +347,19 @@ export default function Careers() {
                   </div>
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
-                      Upload Resume (PDF/DOC)
+                      Resume Link (Google Drive / Dropbox / LinkedIn) *
                     </label>
-                    <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center">
-                      <Upload className="h-8 w-8 text-gray-400 mx-auto mb-2" />
-                      <p className="text-gray-600 text-sm">
-                        {resume ? (
-                          <span className="text-purple-600 font-medium">{resume.name}</span>
-                        ) : (
-                          <>
-                            Drag and drop your resume here, or{' '}
-                            <label className="text-purple-600 cursor-pointer hover:underline">
-                              browse
-                              <input
-                                type="file"
-                                name="attachment"
-                                accept=".pdf,.doc,.docx"
-                                onChange={(e) => setResume(e.target.files?.[0] || null)}
-                                className="hidden"
-                              />
-                            </label>
-                          </>
-                        )}
-                      </p>
-                      {resume && (
-                        <button 
-                          type="button"
-                          onClick={() => setResume(null)}
-                          className="text-red-500 text-xs mt-2 hover:underline"
-                        >
-                          Remove file
-                        </button>
-                      )}
-                      <p className="text-gray-400 text-xs mt-1">Max file size: 5MB</p>
-                    </div>
+                    <input
+                      type="url"
+                      required
+                      placeholder="https://drive.google.com/..."
+                      value={formData.resumeLink}
+                      onChange={(e) => setFormData({ ...formData, resumeLink: e.target.value })}
+                      className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-purple-600 focus:border-transparent outline-none transition-all"
+                    />
+                    <p className="text-gray-400 text-xs mt-2">
+                      Please upload your resume to Google Drive/Dropbox and paste the link here. Make sure the link is public.
+                    </p>
                   </div>
 
                   {error && (
@@ -417,8 +392,7 @@ export default function Careers() {
                     onClick={() => {
                       setSubmitted(false);
                       setSelectedJob(null);
-                      setFormData({ name: '', phone: '', email: '', experience: '', location: '' });
-                      setResume(null);
+                      setFormData({ name: '', phone: '', email: '', experience: '', location: '', resumeLink: '' });
                     }}
                     className="text-purple-600 font-medium hover:underline"
                   >
