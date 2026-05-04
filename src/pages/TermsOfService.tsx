@@ -145,7 +145,7 @@ export default function TermsOfService() {
             <ul className="space-y-3 text-gray-600">
               <li className="flex items-start space-x-2"><span className="text-yellow-500 font-bold mt-1">•</span><span><strong>Before Installation Begins:</strong> Cancellation requests submitted before the start of installation may be eligible for a refund of the booking amount, minus any expenses already incurred (survey, documentation, material orders).</span></li>
               <li className="flex items-start space-x-2"><span className="text-yellow-500 font-bold mt-1">•</span><span><strong>After Installation Begins:</strong> No refund will be issued once materials have been procured and installation has commenced.</span></li>
-              <li className="flex items-start space-x-2"><span className="text-yellow-500 font-bold mt-1">•</span><span>All refund requests must be submitted in writing to <a href="mailto:prashant@sakshamsolar.com" className="text-yellow-600 hover:underline">prashant@sakshamsolar.com</a>.</span></li>
+              <li className="flex items-start space-x-2"><span className="text-yellow-500 font-bold mt-1">•</span><span>All refund requests must be submitted in writing to <a href="mailto:prashant.sakshamsolar@gmail.com" className="text-yellow-600 hover:underline">prashant.sakshamsolar@gmail.com</a>.</span></li>
               <li className="flex items-start space-x-2"><span className="text-yellow-500 font-bold mt-1">•</span><span>Approved refunds will be processed within 15 business days.</span></li>
             </ul>
           </div>
@@ -173,10 +173,10 @@ export default function TermsOfService() {
               Our team is happy to clarify any part of these terms.
             </p>
             <a
-              href="mailto:prashant@sakshamsolar.com"
+              href="mailto:prashant.sakshamsolar@gmail.com"
               className="inline-block bg-gray-900 text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-colors"
             >
-              prashant@sakshamsolar.com
+              prashant.sakshamsolar@gmail.com
             </a>
           </div>
 

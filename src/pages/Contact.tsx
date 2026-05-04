@@ -22,7 +22,7 @@ export default function Contact() {
     setError(null);
 
     const submissionData = new FormData();
-    submissionData.append("access_key", "d71d3cf1-978b-4032-a372-f760fb5fb3dd");
+    submissionData.append("access_key", "d4e4b47c-4675-4619-a15a-58fa40105738");
     submissionData.append("subject", `New Contact Form Submission from ${formData.name}`);
     submissionData.append("from_name", "Saksham Solar Website");
     
@@ -106,8 +106,8 @@ export default function Contact() {
                 <h3 className="font-semibold text-lg">Email Us</h3>
               </div>
               <p className="text-blue-100 mb-2">Send us your queries</p>
-              <a href="mailto:prashant@sakshamsolar.com" className="text-lg font-bold hover:underline">
-                prashant@sakshamsolar.com
+              <a href="mailto:prashant.sakshamsolar@gmail.com" className="text-lg font-bold hover:underline">
+                prashant.sakshamsolar@gmail.com
               </a>
               <p className="text-sm text-blue-100 mt-2">Response within 24 hours</p>
             </div>

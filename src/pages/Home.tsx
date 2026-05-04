@@ -1,5 +1,6 @@
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Sun, Zap, Shield, TrendingUp, Award, CheckCircle, Star } from 'lucide-react';
+import { Sun, Zap, Shield, TrendingUp, Award, CheckCircle, Star, Loader2, Send } from 'lucide-react';
 import CountUp from '../components/CountUp';
 
 const stats = [
@@ -294,8 +295,48 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Testimonials */}
+      {/* Lead Capture Form Section */}
       <section className="py-20 bg-white">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-3xl overflow-hidden shadow-2xl">
+            <div className="grid lg:grid-cols-2">
+              <div className="p-8 lg:p-16 text-white flex flex-col justify-center">
+                <div className="inline-flex items-center space-x-2 bg-yellow-400/20 text-yellow-400 px-4 py-2 rounded-full text-sm font-medium mb-6 w-fit">
+                  <Sun className="h-4 w-4" />
+                  <span>Free Site Survey</span>
+                </div>
+                <h2 className="text-3xl lg:text-4xl font-bold mb-6">
+                  Ready to Go Solar? <br />
+                  <span className="text-yellow-400">Get a Free Expert Quote</span>
+                </h2>
+                <p className="text-gray-300 text-lg mb-8 leading-relaxed">
+                  Join 5000+ happy customers in Vidarbha. Our experts will help you with:
+                </p>
+                <ul className="space-y-4">
+                  {[
+                    'Detailed site survey & shadow analysis',
+                    'Custom system design for maximum savings',
+                    'Subsidy & net-metering paperwork help',
+                    'Flexible EMI & financing options'
+                  ].map((item, i) => (
+                    <li key={i} className="flex items-center space-x-3">
+                      <CheckCircle className="h-5 w-5 text-yellow-400 flex-shrink-0" />
+                      <span className="text-gray-200">{item}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div className="bg-white p-8 lg:p-16">
+                <HomeLeadForm />
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-20 bg-gray-50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold text-gray-900 mb-4">
@@ -351,5 +392,120 @@ export default function Home() {
         </div>
       </section>
     </div>
+  );
+}
+
+function HomeLeadForm() {
+  const [submitted, setSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setError(null);
+
+    const formData = new FormData(e.currentTarget);
+    formData.append("access_key", "d4e4b47c-4675-4619-a15a-58fa40105738");
+    formData.append("subject", `New Website Inquiry from ${formData.get("name")}`);
+    formData.append("from_name", "Saksham Solar Home");
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: formData
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setSubmitted(true);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      setError("Failed to send request. Please check your connection.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  if (submitted) {
+    return (
+      <div className="text-center py-12">
+        <div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6">
+          <CheckCircle className="h-10 w-10 text-green-600" />
+        </div>
+        <h3 className="text-2xl font-bold text-gray-900 mb-2">Message Sent!</h3>
+        <p className="text-gray-600">
+          Thank you for reaching out. Our solar expert will call you shortly.
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+        <input
+          type="text"
+          name="name"
+          required
+          placeholder="Enter your name"
+          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none transition-all"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+        <input
+          type="tel"
+          name="phone"
+          required
+          placeholder="Enter 10-digit mobile number"
+          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none transition-all"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+        <input
+          type="text"
+          name="location"
+          required
+          placeholder="City/Village name"
+          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none transition-all"
+        />
+      </div>
+      <div>
+        <label className="block text-sm font-medium text-gray-700 mb-1">Requirement</label>
+        <select
+          name="requirement"
+          className="w-full px-4 py-3 border border-gray-200 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none transition-all"
+        >
+          <option value="residential">Residential Solar</option>
+          <option value="commercial">Commercial/Industrial</option>
+          <option value="pump">Solar Water Pump</option>
+          <option value="other">Other Inquiry</option>
+        </select>
+      </div>
+      
+      {error && <p className="text-red-500 text-sm">{error}</p>}
+
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-4 rounded-xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 transition-all shadow-lg flex items-center justify-center space-x-2 disabled:opacity-70 mt-6"
+      >
+        {isSubmitting ? (
+          <Loader2 className="h-5 w-5 animate-spin" />
+        ) : (
+          <Send className="h-5 w-5" />
+        )}
+        <span>{isSubmitting ? 'Sending Request...' : 'Get My Free Quote'}</span>
+      </button>
+      
+      <p className="text-center text-xs text-gray-400 mt-4">
+        By clicking, you agree to our terms and to be contacted by our team.
+      </p>
+    </form>
   );
 }

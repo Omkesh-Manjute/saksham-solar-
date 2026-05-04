@@ -101,32 +101,47 @@ export default function Careers() {
     }, 200);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
 
     const jobTitle = vacancies.find(v => v.id === selectedJob)?.title || 'General Application';
-    const phoneNumber = '919923519061';
+    
+    const submissionData = new FormData();
+    submissionData.append("access_key", "d4e4b47c-4675-4619-a15a-58fa40105738");
+    submissionData.append("subject", `New Job Application: ${jobTitle} from ${formData.name}`);
+    submissionData.append("from_name", "Saksham Solar Careers");
+    submissionData.append("job_title", jobTitle);
+    
+    Object.entries(formData).forEach(([key, value]) => {
+      submissionData.append(key, value);
+    });
 
-    const message =
-      `*New Job Application - Saksham Solar*%0A%0A` +
-      `*Position:* ${jobTitle}%0A` +
-      `*Name:* ${formData.name}%0A` +
-      `*Phone:* ${formData.phone}%0A` +
-      `*Email:* ${formData.email || 'Not provided'}%0A` +
-      `*Experience:* ${formData.experience}%0A` +
-      `*Preferred Location:* ${formData.location}%0A%0A` +
-      `_Please find my resume attached._`;
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: submissionData
+      });
 
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
-
-    setTimeout(() => {
-      window.open(whatsappUrl, '_blank');
-      setSubmitted(true);
+      const data = await response.json();
+      if (data.success) {
+        setSubmitted(true);
+        setFormData({ name: '', phone: '', email: '', experience: '', location: '' });
+        
+        // Also open WhatsApp as a secondary confirmation if desired, 
+        // but the primary requirement is the email via Web3Forms.
+        const phoneNumber = '919923519061';
+        const message = `*Job Application Received*%0A%0A*Position:* ${jobTitle}%0A*Name:* ${formData.name}%0A_Details sent to email._`;
+        window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+      } else {
+        setError("Something went wrong. Please try again later.");
+      }
+    } catch (err) {
+      setError("Failed to submit application. Please check your internet connection.");
+    } finally {
       setIsSubmitting(false);
-      setFormData({ name: '', phone: '', email: '', experience: '', location: '' });
-    }, 1000);
+    }
   };
 
   return (

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Calculator, Sun, TrendingDown, CheckCircle, AlertCircle, IndianRupee, TrendingUp } from 'lucide-react';
+import { Calculator, Sun, TrendingDown, CheckCircle, AlertCircle, IndianRupee, TrendingUp, Loader2, Zap, Send } from 'lucide-react';
 import CountUp from '../components/CountUp';
 
 export default function SolarCalculator() {
@@ -10,6 +10,7 @@ export default function SolarCalculator() {
     houseType: 'residential',
     roofType: 'terrace',
   });
+  
   const [result, setResult] = useState<null | {
     systemSize: number;
     cost: number;
@@ -19,7 +20,16 @@ export default function SolarCalculator() {
     paybackPeriod: number;
     annualSavings: number;
   }>(null);
-  const [submitted, setSubmitted] = useState(false);
+
+  const [leadForm, setLeadForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+  });
+
+  const [leadSubmitted, setLeadSubmitted] = useState(false);
+  const [isLeadSubmitting, setIsLeadSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const locations = [
     'Nagpur', 'Mumbai', 'Pune', 'Gondia', 'Bhandara', 'Chandrapur',
@@ -30,7 +40,7 @@ export default function SolarCalculator() {
     const bill = parseFloat(formData.monthlyBill);
     if (!bill || bill < 500) return;
 
-    // Calculation logic based on PRD
+    // Calculation logic
     let systemSize: number;
     if (bill <= 1500) systemSize = 1;
     else if (bill <= 3000) systemSize = 2;
@@ -71,10 +81,44 @@ export default function SolarCalculator() {
     calculateSolar();
   };
 
-  const handleLeadSubmit = (e: React.FormEvent) => {
+  const handleLeadSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
-    console.log('Lead submitted:', { ...formData, result });
+    setIsLeadSubmitting(true);
+    setError(null);
+
+    const submissionData = new FormData();
+    submissionData.append("access_key", "d4e4b47c-4675-4619-a15a-58fa40105738");
+    submissionData.append("subject", `Solar Quote Request from ${leadForm.name} (${formData.location})`);
+    submissionData.append("from_name", "Saksham Solar Website");
+    
+    submissionData.append("Name", leadForm.name);
+    submissionData.append("Phone", leadForm.phone);
+    submissionData.append("Email", leadForm.email);
+    submissionData.append("Location", formData.location || "Not specified");
+    submissionData.append("Monthly Bill", formData.monthlyBill || "Not specified");
+    
+    if (result) {
+      submissionData.append("Recommended System", `${result.systemSize} kW`);
+      submissionData.append("Estimated Savings", `₹${Math.round(result.monthlySavings)}/month`);
+    }
+
+    try {
+      const response = await fetch("https://api.web3forms.com/submit", {
+        method: "POST",
+        body: submissionData
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setLeadSubmitted(true);
+      } else {
+        setError("Something went wrong. Please try again.");
+      }
+    } catch (err) {
+      setError("Failed to send request. Please check your connection.");
+    } finally {
+      setIsLeadSubmitting(false);
+    }
   };
 
   return (
@@ -96,7 +140,7 @@ export default function SolarCalculator() {
 
         <div className="grid lg:grid-cols-2 gap-8">
           {/* Calculator Form */}
-          <div className="bg-white rounded-2xl shadow-xl p-8 animate-in fade-in slide-in-from-left duration-700">
+          <div className="bg-white rounded-2xl shadow-xl p-8 animate-in fade-in slide-in-from-left duration-700 h-fit">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Enter Your Details</h2>
             <form onSubmit={handleSubmit} className="space-y-6">
               <div>
@@ -115,7 +159,7 @@ export default function SolarCalculator() {
                     min="500"
                   />
                 </div>
-                <p className="text-xs text-gray-500 mt-1">Average Indian household: ₹2,000-₹5,000</p>
+                <p className="text-xs text-gray-500 mt-1">Average household: ₹2,000-₹5,000</p>
               </div>
 
               <div>
@@ -151,11 +195,6 @@ export default function SolarCalculator() {
                         }`}
                     >
                       <span className="relative z-10">{type}</span>
-                      {formData.houseType === type && (
-                        <div className="absolute right-2 top-2 animate-in zoom-in duration-300">
-                          <CheckCircle className="h-4 w-4 text-yellow-600" />
-                        </div>
-                      )}
                     </button>
                   ))}
                 </div>
@@ -182,11 +221,6 @@ export default function SolarCalculator() {
                         }`}
                     >
                       <span className="relative z-10">{type.label}</span>
-                      {formData.roofType === type.value && (
-                        <div className="absolute right-2 top-2 animate-in zoom-in duration-300">
-                          <CheckCircle className="h-4 w-4 text-yellow-600" />
-                        </div>
-                      )}
                     </button>
                   ))}
                 </div>
@@ -201,187 +235,131 @@ export default function SolarCalculator() {
             </form>
           </div>
 
-          {/* Results */}
-          <div className="space-y-6">
+          {/* Results and Lead Form */}
+          <div className="lg:sticky lg:top-24 space-y-6">
             {result ? (
-              <>
-                <div className="bg-white rounded-2xl shadow-xl p-8 animate-in fade-in zoom-in duration-700">
-                  <div className="flex items-center space-x-3 mb-6">
-                    <div className="bg-green-100 p-3 rounded-xl">
-                      <CheckCircle className="h-6 w-6 text-green-600" />
-                    </div>
-                    <h2 className="text-2xl font-bold text-gray-900">Your Solar Recommendation</h2>
+              <div className="bg-white rounded-2xl shadow-xl p-8 animate-in fade-in zoom-in duration-700 border-2 border-green-100">
+                <div className="flex items-center space-x-3 mb-6">
+                  <div className="bg-green-100 p-3 rounded-xl">
+                    <CheckCircle className="h-6 w-6 text-green-600" />
                   </div>
+                  <h2 className="text-2xl font-bold text-gray-900">Your Recommendation</h2>
+                </div>
 
-                  <div className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl p-6 text-white mb-6 shadow-lg transform hover:scale-[1.02] transition-transform">
-                    <div className="text-center">
-                      <div className="text-sm opacity-90 mb-1 font-bold uppercase tracking-widest">Recommended System Size</div>
-                      <div className="text-6xl font-extrabold mb-2 flex justify-center items-baseline">
-                        <CountUp end={result.systemSize} />
-                        <span className="text-2xl ml-2">kW</span>
-                      </div>
-                      <div className="bg-white/20 backdrop-blur-sm rounded-lg px-4 py-2 inline-block text-sm font-medium">
-                        Perfect for your electricity usage
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="space-y-4">
-                    <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                      <span className="text-gray-600">System Cost</span>
-                      <span className="font-bold text-gray-900 text-lg">₹<CountUp end={result.cost} /></span>
-                    </div>
-                    <div className="flex justify-between items-center py-3 border-b border-gray-100">
-                      <span className="text-gray-600">Government Subsidy</span>
-                      <span className="font-bold text-green-600 text-lg">- ₹<CountUp end={result.subsidy} /></span>
-                    </div>
-                    <div className="flex justify-between items-center py-5 bg-yellow-50 rounded-2xl px-6 shadow-inner border border-yellow-100">
-                      <span className="font-bold text-gray-700">Final Price</span>
-                      <span className="text-3xl font-black text-yellow-600">₹<CountUp end={result.finalCost} /></span>
-                    </div>
-                  </div>
-
-                  <div className="mt-8 grid grid-cols-2 gap-4">
-                    <div className="bg-green-50 rounded-2xl p-6 text-center border border-green-100 group hover:bg-green-100 transition-colors">
-                      <TrendingUp className="h-8 w-8 text-green-600 mx-auto mb-2" />
-                      <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Monthly Savings</div>
-                      <div className="text-2xl font-black text-green-700">₹<CountUp end={Math.round(result.monthlySavings)} /></div>
-                    </div>
-                    <div className="bg-blue-50 rounded-2xl p-6 text-center border border-blue-100 group hover:bg-blue-100 transition-colors">
-                      <Sun className="h-8 w-8 text-blue-600 mx-auto mb-2" />
-                      <div className="text-xs text-gray-500 font-bold uppercase tracking-wider">Payback Period</div>
-                      <div className="text-2xl font-black text-blue-700"><CountUp end={Number(result.paybackPeriod.toFixed(1))} /> yrs</div>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 bg-gray-50 rounded-xl p-4">
-                    <div className="flex items-start space-x-3">
-                      <AlertCircle className="h-5 w-5 text-blue-500 mt-0.5" />
-                      <div className="text-sm text-gray-600">
-                        <p className="font-medium text-gray-900 mb-1">Additional Benefits:</p>
-                        <ul className="space-y-1">
-                          <li>• Annual Savings: ₹{Math.round(result.annualSavings).toLocaleString()}</li>
-                          <li>• 25+ year system lifespan</li>
-                          <li>• Easy EMI options available</li>
-                          <li>• Free maintenance for 2 years</li>
-                        </ul>
-                      </div>
+                <div className="bg-gradient-to-br from-yellow-400 to-orange-500 rounded-2xl p-6 text-white mb-6 shadow-lg">
+                  <div className="text-center">
+                    <div className="text-sm opacity-90 mb-1 font-bold uppercase tracking-widest">System Size</div>
+                    <div className="text-6xl font-extrabold mb-2 flex justify-center items-baseline">
+                      <CountUp end={result.systemSize} />
+                      <span className="text-2xl ml-2">kW</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Lead Capture Form */}
-                <div className="bg-white rounded-2xl shadow-xl p-8">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">Get Free Quote</h3>
-                  {!submitted ? (
-                    <form onSubmit={handleLeadSubmit} className="space-y-4">
-                      <input
-                        type="text"
-                        placeholder="Your Name"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                        required
-                      />
-                      <input
-                        type="tel"
-                        placeholder="Phone Number"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                        required
-                      />
-                      <input
-                        type="email"
-                        placeholder="Email Address"
-                        className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent"
-                      />
-                      <button
-                        type="submit"
-                        className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-4 rounded-xl font-semibold hover:from-yellow-600 hover:to-orange-600 transition-all"
-                      >
-                        Get Free Consultation
-                      </button>
-                    </form>
-                  ) : (
-                    <div className="text-center py-8">
-                      <CheckCircle className="h-16 w-16 text-green-500 mx-auto mb-4" />
-                      <h4 className="text-xl font-bold text-gray-900 mb-2">Thank You!</h4>
-                      <p className="text-gray-600">Our expert will contact you within 24 hours</p>
-                    </div>
-                  )}
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                    <span className="text-gray-600">System Cost</span>
+                    <span className="font-bold text-gray-900">₹{result.cost.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-3 border-b border-gray-100">
+                    <span className="text-gray-600">Govt. Subsidy</span>
+                    <span className="font-bold text-green-600">- ₹{result.subsidy.toLocaleString()}</span>
+                  </div>
+                  <div className="flex justify-between items-center py-4 bg-yellow-50 rounded-xl px-4">
+                    <span className="font-bold text-gray-700">Final Price</span>
+                    <span className="text-2xl font-black text-yellow-600">₹{result.finalCost.toLocaleString()}</span>
+                  </div>
                 </div>
-              </>
+
+                <div className="mt-8 grid grid-cols-2 gap-4">
+                  <div className="bg-green-50 rounded-xl p-4 text-center border border-green-100">
+                    <TrendingUp className="h-6 w-6 text-green-600 mx-auto mb-1" />
+                    <div className="text-xs text-gray-500 font-bold uppercase">Monthly Savings</div>
+                    <div className="text-xl font-black text-green-700">₹{Math.round(result.monthlySavings).toLocaleString()}</div>
+                  </div>
+                  <div className="bg-blue-50 rounded-xl p-4 text-center border border-blue-100">
+                    <Sun className="h-6 w-6 text-blue-600 mx-auto mb-1" />
+                    <div className="text-xs text-gray-500 font-bold uppercase">Payback</div>
+                    <div className="text-xl font-black text-blue-700">{result.paybackPeriod.toFixed(1)} yrs</div>
+                  </div>
+                </div>
+              </div>
             ) : (
-              <div className="bg-white rounded-2xl shadow-xl p-8 text-center">
-                <div className="bg-yellow-100 w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <Sun className="h-12 w-12 text-yellow-600" />
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-4">
-                  Enter Your Details
-                </h3>
-                <p className="text-gray-600 mb-6">
-                  Fill in the form to get personalized solar recommendations with cost breakdown and savings calculation
+              <div className="bg-gradient-to-br from-yellow-500 to-orange-500 rounded-2xl p-8 text-white text-center shadow-lg">
+                <Sun className="h-12 w-12 mx-auto mb-4 opacity-50 animate-pulse" />
+                <h3 className="text-xl font-bold mb-2">See Your Savings</h3>
+                <p className="text-yellow-100 text-sm">
+                  Fill in the calculator to see your potential cost savings and government subsidy details.
                 </p>
-                <div className="bg-gray-50 rounded-xl p-4 text-left">
-                  <h4 className="font-semibold text-gray-900 mb-3">What you'll get:</h4>
-                  <ul className="space-y-2 text-gray-600">
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span>Recommended system size</span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span>Cost after subsidy</span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span>Monthly & annual savings</span>
-                    </li>
-                    <li className="flex items-center space-x-2">
-                      <CheckCircle className="h-4 w-4 text-green-500" />
-                      <span>Payback period</span>
-                    </li>
-                  </ul>
-                </div>
               </div>
             )}
-          </div>
-        </div>
 
-        {/* Info Section */}
-        <div className="mt-16 bg-white rounded-2xl shadow-xl p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6 text-center">How Solar Saves You Money</h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="text-center">
-              <div className="bg-yellow-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">1️⃣</span>
+            {/* Lead Capture Form - Always Visible */}
+            <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
+              <div className="flex items-center space-x-3 mb-4">
+                <div className="bg-yellow-100 p-2 rounded-lg">
+                  <Zap className="h-6 w-6 text-yellow-600" />
+                </div>
+                <h3 className="text-xl font-bold text-gray-900">Get Free Quote</h3>
               </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Generate Power</h3>
-              <p className="text-gray-600 text-sm">Solar panels convert sunlight into electricity for your home</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">2️⃣</span>
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Reduce Bills</h3>
-              <p className="text-gray-600 text-sm">Use solar power first, grid power only when needed</p>
-            </div>
-            <div className="text-center">
-              <div className="bg-blue-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">3️⃣</span>
-              </div>
-              <h3 className="font-semibold text-gray-900 mb-2">Save Long-term</h3>
-              <p className="text-gray-600 text-sm">25+ years of free electricity after payback period</p>
+              <p className="text-gray-500 text-sm mb-6">
+                Fill this form and our experts will contact you for a site survey and detailed proposal.
+              </p>
+              
+              {!leadSubmitted ? (
+                <form onSubmit={handleLeadSubmit} className="space-y-4">
+                  <input
+                    type="text"
+                    placeholder="Your Name *"
+                    required
+                    value={leadForm.name}
+                    onChange={(e) => setLeadForm({ ...leadForm, name: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
+                  />
+                  <input
+                    type="tel"
+                    placeholder="Phone Number *"
+                    required
+                    value={leadForm.phone}
+                    onChange={(e) => setLeadForm({ ...leadForm, phone: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
+                  />
+                  <input
+                    type="email"
+                    placeholder="Email Address"
+                    value={leadForm.email}
+                    onChange={(e) => setLeadForm({ ...leadForm, email: e.target.value })}
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-yellow-400 focus:border-transparent outline-none"
+                  />
+                  
+                  {error && <p className="text-red-500 text-sm">{error}</p>}
+
+                  <button
+                    type="submit"
+                    disabled={isLeadSubmitting}
+                    className="w-full bg-gradient-to-r from-yellow-500 to-orange-500 text-white py-4 rounded-xl font-bold text-lg hover:from-yellow-600 hover:to-orange-600 transition-all shadow-lg flex items-center justify-center space-x-2 disabled:opacity-70"
+                  >
+                    {isLeadSubmitting ? (
+                      <Loader2 className="h-5 w-5 animate-spin" />
+                    ) : (
+                      <Send className="h-5 w-5" />
+                    )}
+                    <span>{isLeadSubmitting ? 'Sending...' : 'Request Consultation'}</span>
+                  </button>
+                </form>
+              ) : (
+                <div className="text-center py-8">
+                  <div className="bg-green-100 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <CheckCircle className="h-8 w-8 text-green-600" />
+                  </div>
+                  <h4 className="text-xl font-bold text-gray-900 mb-2">Request Received!</h4>
+                  <p className="text-gray-600 text-sm text-center">
+                    Thank you, {leadForm.name}! Our team will contact you on {leadForm.phone} shortly.
+                  </p>
+                </div>
+              )}
             </div>
           </div>
-        </div>
-
-        {/* CTA */}
-        <div className="mt-12 text-center">
-          <Link
-            to="/contact"
-            className="inline-flex items-center space-x-2 text-yellow-600 font-semibold hover:text-yellow-700"
-          >
-            <span>Have questions? Talk to our solar experts</span>
-            <span>→</span>
-          </Link>
         </div>
       </div>
     </div>

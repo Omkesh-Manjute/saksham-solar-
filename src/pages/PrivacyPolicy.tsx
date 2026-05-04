@@ -121,8 +121,8 @@ export default function PrivacyPolicy() {
             </ul>
             <p className="text-gray-600 mt-4">
               To exercise any of these rights, please contact us at:{' '}
-              <a href="mailto:prashant@sakshamsolar.com" className="text-yellow-600 font-semibold hover:underline">
-                prashant@sakshamsolar.com
+              <a href="mailto:prashant.sakshamsolar@gmail.com" className="text-yellow-600 font-semibold hover:underline">
+                prashant.sakshamsolar@gmail.com
               </a>
             </p>
           </div>
@@ -142,10 +142,10 @@ export default function PrivacyPolicy() {
               Contact our team and we'll respond within 24 hours.
             </p>
             <a
-              href="mailto:prashant@sakshamsolar.com"
+              href="mailto:prashant.sakshamsolar@gmail.com"
               className="inline-block bg-gray-900 text-white px-8 py-3 rounded-xl font-semibold hover:bg-gray-800 transition-colors"
             >
-              prashant@sakshamsolar.com
+              prashant.sakshamsolar@gmail.com
             </a>
           </div>
 
