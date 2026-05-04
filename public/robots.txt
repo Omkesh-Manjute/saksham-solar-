@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://sakshamsolar.in/sitemap.xml
+Sitemap: https://www.sakshamsolar.com/sitemap.xml
